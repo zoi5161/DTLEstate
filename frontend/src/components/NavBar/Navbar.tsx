@@ -23,6 +23,7 @@ const Navbar = () => {
     if (window.scrollY > 50) { // Điều chỉnh giá trị 50 nếu cần
       setScrolled(true);
       setLogoImage("./imagesHome/LogoBlack.png"); // Đổi logo khi cuộn xuống
+      setMenuActive(false); // Tắt dropdown khi cuộn trang
     } else {
       setScrolled(false);
       setLogoImage("./imagesHome/LogoWhite.png"); // Trở lại logo trắng khi ở đầu trang
@@ -48,8 +49,8 @@ const Navbar = () => {
 
   return (
     <div className={`${styles.navbar} ${hidden ? styles.hidden : ''} ${scrolled ? styles.scrolled : ''}`}>
-      <div className={styles.logo} onClick={scrollToTop}> {/* Thêm sự kiện onClick vào logo */}
-        <img src={logoImage} alt="Logo" className={styles.logoImage} /> {/* Sử dụng trạng thái logoImage */}
+      <div className={styles.logo} onClick={scrollToTop}>
+        <img src={logoImage} alt="Logo" className={styles.logoImage} />
       </div>
       <div className={`${styles.navList} ${menuActive ? styles.active : ''}`}>
         <div>BẤT ĐỘNG SẢN</div>
@@ -57,7 +58,7 @@ const Navbar = () => {
         <div>ĐĂNG KÝ</div>
       </div>
       <div className={styles.menuIcon} onClick={toggleMenu}>
-        &#9776; {/* Biểu tượng menu (hamburger) */}
+        &#9776;
       </div>
     </div>
   );

@@ -8,7 +8,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 40px;
-  z-index: 20;
+  z-index: 40;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
   transition: top 0.7s ease, background-color 0.3s ease;
 }
@@ -20,6 +20,7 @@
 .navbar.scrolled {
   background-color: white;
   background: white;
+  box-shadow: none;
 }
 
 .navbar .logo {
@@ -60,11 +61,19 @@
   color: #f39c12;
 }
 
+.navbar.scrolled .navList div {
+  color: black;
+}
+
 .menuIcon {
   font-size: 24px;
   display: none;
   cursor: pointer;
   color: white;
+}
+
+.navbar.scrolled .menuIcon {
+  color: black;
 }
 
 @media (max-width: 768px) {
@@ -110,5 +119,9 @@
   .logoImage {
     width: 50px;
     -webkit-user-drag: none;
+  }
+
+  .navbar.scrolled .navList {
+    background-color: white;
   }
 }

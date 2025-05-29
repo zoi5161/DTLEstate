@@ -1,0 +1,116 @@
+.dotWrapper {
+  position: absolute;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.dot {
+  border-radius: 50%;
+  cursor: pointer;
+  transition: box-shadow 0.4s ease;
+  z-index: 1;
+  position: relative;
+}
+
+.dot:hover {
+  animation: pulseExpand 0.6s forwards;
+  z-index: 10;
+}
+
+.groupInfo{
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 110%;
+  margin-bottom: 8px;
+  padding: 0px 0px 12px 0px;
+  background-color: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  
+  width: 400px;
+  height: 225px;
+  text-align: start;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-5px);
+  transition: opacity 0.4s ease 0.2s, transform 0.4s ease 0.5s;
+  z-index: 20;
+  white-space: normal;
+  visibility: hidden;
+
+  font-family: 'Playfair Display', serif;
+  font-size: 12px;
+  font-weight: 100;
+  color: #1a1a1a;
+}
+
+.tooltip.show {
+  opacity: 1;
+  transform: translateX(5px);
+  pointer-events: auto;
+  visibility: visible;
+}
+
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+.tooltipImage {
+  width: 400px;
+  height: 200px;
+  margin-bottom: 6px;
+  object-fit: cover;
+}
+
+.tooltipTitle {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.tooltipPrice {
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-left: 10px;
+}
+
+/* Hiệu ứng fade in */
+@keyframes fadeInTooltip {
+  to {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* Animation vòng expand dot */
+@keyframes pulseExpand {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(0, 0, 0, 0.16),
+      0 0 0 0 rgba(0, 0, 0, 0.12),
+      0 0 0 0 rgba(0, 0, 0, 0.08),
+      0 0 0 0 rgba(0, 0, 0, 0.04);
+  }
+  100% {
+    box-shadow:
+      0 0 0 4px rgba(0, 0, 0, 0.16),
+      0 0 0 8px rgba(0, 0, 0, 0.12),
+      0 0 0 12px rgba(0, 0, 0, 0.08),
+      0 0 0 16px rgba(0, 0, 0, 0.04);
+  }
+}
