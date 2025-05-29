@@ -1,0 +1,114 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px;
+  z-index: 20;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+  transition: top 0.7s ease, background-color 0.3s ease;
+}
+
+.navbar.hidden {
+  top: -100px;
+}
+
+.navbar.scrolled {
+  background-color: white;
+  background: white;
+}
+
+.navbar .logo {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logoImage {
+  width: 80px;
+  -webkit-user-drag: none;
+}
+
+.navList {
+  display: flex;
+  gap: 50px;
+  font-size: 12px;
+  font-family: 'YourFont', sans-serif;
+  font-weight: 100;
+}
+
+.navList div {
+  color: white;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.navbar.scrolled .navList div {
+  color: black;
+}
+
+.navbar.scrolled .navList div:hover {
+  color: #f39c12;
+}
+
+.navList div:hover {
+  color: #f39c12;
+}
+
+.menuIcon {
+  font-size: 24px;
+  display: none;
+  cursor: pointer;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 10px 20px;
+  }
+
+  .navList {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    width: 200px;
+    flex-direction: column;
+    padding: 10px;
+    transform: translateY(-20px);
+    opacity: 0;
+    transition: all 0.7s ease;
+    border-radius: 3px;
+  }
+
+  .navList.active {
+    display: flex;
+    transform: translateY(0);
+    opacity: 1;
+    transition: all 0.7s ease;
+    gap: 10px;
+  }
+
+  .navList div {
+    padding: 10px;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .menuIcon {
+    display: block;
+  }
+
+  .logoImage {
+    width: 50px;
+    -webkit-user-drag: none;
+  }
+}

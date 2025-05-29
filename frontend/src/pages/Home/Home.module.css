@@ -1,0 +1,355 @@
+.container {
+  text-align: center;
+  background-color: #f0f0f0;
+}
+
+.button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.banner {
+  width: 100%;
+  height: 100vh;
+  background-image: url('../../../public/imagesHome/banner3.jpg'); /* Đảm bảo rằng ảnh của bạn nằm trong thư mục public */
+  background-size: cover; /* Đảm bảo ảnh phủ đầy toàn bộ không gian */
+  background-position: center; /* Căn giữa ảnh */
+
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: start;
+  color: white;
+}
+
+.banner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+
+.descriptionBanner {
+  margin: 0 0 5px 100px;
+  font-weight: 100;
+  font-family: 'YourFont', sans-serif;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.titleBanner {
+  margin: 0 0 50px 100px;
+  font-size: 50px;
+  text-align: start;
+  font-family: 'Playfair Display', serif;
+  text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+  font-weight: 100;
+  z-index: 10;
+}
+
+.introduction{
+  height: 85vh;
+  width: 100%;
+  background-color: #eceae3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+}
+
+.descriptionIntroduction{
+  font-size: 12px;
+  margin-bottom: 10px;
+  margin-top: 30px;
+  font-weight: 100;
+  color: #555555;
+  font-family: 'YourFont', sans-serif;
+}
+
+.titleIntroduction{
+  font-size: 64px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  color: #535353;
+  font-family: 'Playfair Display', serif;
+}
+
+.contentIntroduction{
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  font-weight: 100;
+  color: #717171;
+  font-family: 'YourFont', sans-serif;
+}
+
+.logo {
+  width: 170px;
+  margin: 40px 0 0 0;
+  -webkit-user-drag: none;
+}
+
+.logoSpy{
+  width: 150px;
+  margin: 40px 0 0 0;
+  -webkit-user-drag: none;
+}
+
+.logoContainer{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 100px;
+}
+
+.imageIntroduction{
+  width: 200px;
+  margin: 30px 0 20px 0;
+  -webkit-user-drag: none;
+}
+
+.services {
+  background-color: #eceae3;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.servicesBlock {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 32%;
+  height: 550px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.blockWrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+}
+
+.blockWrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+
+.block {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+  color: white;
+  transition: filter 0.3s ease;
+}
+
+.servicesBlock:hover .block {
+  filter: blur(2px);
+}
+
+.titleBlock {
+  position: absolute;
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  z-index: 20;
+  color: #fff;
+  transition: bottom 0.5s ease-in-out, transform 0.5s ease-in-out;
+  text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+  bottom: 50%;
+}
+
+.servicesBlock:hover .titleBlock {
+  transform: translateY(-20px);
+}
+
+.contentBlock {
+  position: absolute;
+  bottom: 20%;
+  left: 0;
+  right: 0;
+  font-family: 'Playfair Display', serif;
+  color: white;
+  padding: 20px;
+  font-weight: 100;
+  transition: bottom 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  opacity: 1;
+  text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+}
+
+.servicesBlock .contentBlock {
+  opacity: 0;
+  z-index: 10;
+}
+
+.servicesBlock:hover .contentBlock {
+  bottom: 25%;
+  opacity: 1;
+  z-index: 20;
+}
+
+.servicesBlock .contentBlock {
+  transition: bottom 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .descriptionBanner {
+    margin: 0 0 5px 20px;
+    font-size: 10px;
+    font-weight: 100;
+    font-family: 'YourFont', sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .titleBanner {
+    margin: 0 0 50px 20px;
+    font-size: 30px;
+    text-align: start;
+    font-family: 'Playfair Display', serif;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+    font-weight: 100;
+  }
+
+  .logo {
+    width: 100px;
+    margin: 40px 0 0 0;
+    -webkit-user-drag: none;
+  }
+
+  .logoSpy{
+    width: 80px;
+    margin: 40px 0 0 0;
+    -webkit-user-drag: none;
+  }
+
+  .imageIntroduction{
+    width: 150px;
+    margin: 30px 0 20px 0;
+    -webkit-user-drag: none;
+  }
+
+  .descriptionIntroduction{
+    font-size: 12px;
+    margin-bottom: 10px;
+    margin-top: 30px;
+    font-weight: 100;
+    color: #555555;
+    font-family: 'YourFont', sans-serif;
+  }
+
+  .titleIntroduction{
+    font-size: 32px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    color: #535353;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .contentIntroduction{
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    font-weight: 100;
+    color: #717171;
+    font-family: 'YourFont', sans-serif;
+  }
+
+  .servicesBlock {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 32%;
+    height: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+
+  .titleBlock {
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    z-index: 20;
+    color: #fff;
+    transition: bottom 0.5s ease-in-out, transform 0.5s ease-in-out;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+    bottom: 50%;
+  }
+
+  .servicesBlock .contentBlock {
+    opacity: 1;
+    z-index: 10;
+    padding-bottom: 0;
+  }
+
+  .contentBlock {
+    position: absolute;
+    bottom: 20%;
+    font-size: 10px;
+    left: 0;
+    right: 0;
+    font-family: 'Playfair Display', serif;
+    color: white;
+    padding: 20px 0px;
+    font-weight: 100;
+    transition: bottom 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 1;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+  }
+
+  .services {
+    background-color: #eceae3;
+    width: 100%;
+    height: 130vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .servicesBlock {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    /* height: 600px; */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+}
