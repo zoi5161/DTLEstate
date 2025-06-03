@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import styles from './Dot.module.css';
+import { useNavigate } from 'react-router-dom';
 
 interface DotProps {
+  name: string;
   id: string;
   top: string | number;
   left: string | number;
@@ -13,6 +15,7 @@ interface DotProps {
 }
 
 const Dot: React.FC<DotProps> = ({
+  name,
   id,
   top,
   left,
@@ -32,6 +35,13 @@ const Dot: React.FC<DotProps> = ({
     left,
   };
 
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/Estate/${id}`, { state: { name } });
+  };
+
+
   return (
     <div
       id={id}
@@ -39,6 +49,7 @@ const Dot: React.FC<DotProps> = ({
       style={{ position: 'absolute', top, left }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={handleClick}
     >
       <div className={styles.dot} style={style} title={id} />
       <div className={`${styles.tooltip} ${hovered ? styles.show : ''}`}>

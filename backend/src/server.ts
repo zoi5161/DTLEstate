@@ -3,6 +3,9 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import adminRoutes from './routes/adminRoutes';
+import estateRoutes from './routes/estateRoutes';
+import path from 'path';
 
 dotenv.config();
 
@@ -11,14 +14,20 @@ const port = process.env.PORT || 1234;
 
 app.use(
     cors({
-        origin: process.env.CLIENT_URL,  // Cho phép từ địa chỉ này
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Các phương thức HTTP cho phép
+        origin: process.env.CLIENT_URL,
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
         allowedHeaders: ['Content-Type', 'Authorization'],  // Các header cho phép
         credentials: true,  // Nếu bạn muốn sử dụng cookies, credentials cần phải bật
     })
 );
-
+app.use(express.json());
 app.use(bodyParser.json());
+
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+// Routes
+app.use('/api', estateRoutes);
+app.use('/api/admin', adminRoutes);
 
 const connectDB = async () => {
   try {

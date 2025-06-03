@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#000000">
   <title>Spy Estate</title>
-  <link rel="icon" href="./LogoWeb.png" type="image/png" />
+  <link rel="icon" href="./LogoWebBlack.png" type="image/png" sizes="32x32" />
   <link href="https://fonts.googleapis.com/css2?family=YourFont&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <link href="https://db.onlinewebfonts.com/c/4c4c08af466e9ad071b6d69cf44093df?family=SaolDisplay-Regular" rel="stylesheet">
@@ -13,5 +13,27 @@
 <body>
   <div id="root"></div> <!-- React sẽ render ứng dụng vào đây -->
   <!-- Thư viện JavaScript sẽ được Webpack thêm vào tự động -->
+   <script>
+  // Hàm thay đổi favicon
+  function changeFavicon(src) {
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.href = src;
+  }
+
+  const now = new Date();
+  const hour = now.getHours();
+
+  if (hour >= 18 || hour < 6) {
+    changeFavicon('./LogoWebWhite.png');
+  } else {
+    changeFavicon('./LogoWebBlack.png');
+  }
+</script>
+
 </body>
 </html>

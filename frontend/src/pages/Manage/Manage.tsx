@@ -1,0 +1,455 @@
+import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import styles from './Manage.module.css';
+
+const Manage: React.FC = () => {
+  const tags = ['estates', 'customers', 'members'];
+  const [activeTag, setActiveTag] = useState<string>('estates');
+  const [searchValue, setSearchValue] = useState('');
+  const [showPopup, setShowPopup] = useState(false);
+  const [estates, setEstates] = useState<any[]>([]);
+  const [activeEstateId, setActiveEstateId] = useState<string | null>(null);  // Khai báo state để lưu ID của estate
+
+  const API_URL = process.env.REACT_APP_API_URL;
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+  const [formData, setFormData] = useState({
+    name: '',
+    images: [] as File[],
+    address: '',
+    imageAddress: null as File | null,
+    slogan: '',
+    price: '',
+    area: '',
+    startSell: '',
+    description: '',
+    status: '',
+    buyerAgentFee: '',
+    lifestyles: '',
+    viewDescription: '',
+    utilities: '',
+  });
+
+  // Handle input change cho các input thường
+const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const { name, value } = e.target;
+
+  // Nếu là trường startSell, chuyển đổi giá trị trước khi gán
+  if (name === 'startSell') {
+    const dateValue = new Date(value); // Tạo đối tượng Date từ giá trị input
+    const formattedDate = dateValue.toISOString().split('T')[0]; // Chuyển đổi thành định dạng YYYY-MM-DD
+    setFormData((prev) => ({ ...prev, [name]: formattedDate }));
+  } else {
+    // Các trường khác xử lý bình thường
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }
+};
+
+
+  // Handle chọn nhiều ảnh images
+  const handleImagesChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const filesArray = Array.from(e.target.files);
+    setFormData((prev) => ({ ...prev, images: filesArray }));
+  };
+
+  // Handle chọn 1 ảnh imageAddress
+  const handleImageAddressChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const file = e.target.files[0] ?? null;
+    setFormData((prev) => ({ ...prev, imageAddress: file }));
+  };
+
+  // Mở popup khi nhấn thêm mới nếu activeTag === 'estates'
+const handleAddNewClick = () => {
+  if (activeTag === 'estates') {
+    setShowPopup(true);
+    setActiveEstateId(null); // Reset ID khi nhấn "Thêm mới"
+  }
+};
+
+const handleDeleteClick = async (estateId: string) => {
+  if (window.confirm("Are you sure you want to delete this estate?")) {
+    try {
+      const response = await fetch(`${API_URL}/estates/${estateId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error deleting estate');
+      }
+
+      // Cập nhật lại danh sách estate sau khi xóa
+      alert('Estate deleted successfully');
+      setEstates((prevEstates) => prevEstates.filter((estate) => estate._id !== estateId));
+    } catch (error) {
+      alert('Failed to delete estate: ' + error);
+      console.error(error);
+    }
+  }
+};
+
+
+
+  // Đóng popup
+  const handleClosePopup = (clearForm: boolean = false) => {
+    setShowPopup(false);
+    if (clearForm) {
+      setFormData({
+        name: '',
+        images: [],
+        address: '',
+        imageAddress: null,
+        slogan: '',
+        price: '',
+        area: '',
+        startSell: '',
+        description: '',
+        status: '',
+        buyerAgentFee: '',
+        lifestyles: '',
+        viewDescription: '',
+        utilities: '',
+      });
+    }
+  };
+
+  // Xử lý submit form
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    const formPayload = new FormData();
+    const price = String(formData.price);  // Ép kiểu thành chuỗi nếu cần
+    formPayload.append('price', price.replace(/\./g, ''));
+
+    const buyerAgentFee = String(formData.buyerAgentFee || '0'); // Ép kiểu thành chuỗi nếu cần, mặc định '0' nếu null/undefined
+    formPayload.append('buyerAgentFee', buyerAgentFee.replace(/\./g, ''));
+
+    formPayload.append('name', formData.name);
+    formPayload.append('address', formData.address);
+    formPayload.append('slogan', formData.slogan);
+    formPayload.append('area', formData.area);
+    formPayload.append('startSell', formData.startSell);
+    formPayload.append('description', formData.description);
+    formPayload.append('status', formData.status);
+    formPayload.append('lifestyles', formData.lifestyles);
+    formPayload.append('viewDescription', formData.viewDescription);
+    formPayload.append('utilities', formData.utilities);
+
+    formData.images.forEach((file) => {
+      formPayload.append('images', file);
+    });
+
+    if (formData.imageAddress) {
+      formPayload.append('imageAddress', formData.imageAddress);
+    }
+
+    const url = activeEstateId ? `${API_URL}/estates/${activeEstateId}` : `${API_URL}/estates`;  // Nếu có activeEstateId, gửi PUT, nếu không gửi POST
+
+    // PUT hoặc POST request tùy thuộc vào việc có ID hay không
+    const res = await fetch(url, {
+      method: activeEstateId ? 'PUT' : 'POST',
+      body: formPayload,
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || 'Lỗi server');
+    }
+
+    const data = await res.json();
+    alert(`Cập nhật thành công estate: ${data.name}`);
+
+    // Tắt popup và reset form
+    handleClosePopup(true);
+  };
+
+
+  const handleEditClick = (estate: any) => {
+  // Lấy thông tin estate và hiển thị trong form
+  const formattedStartSell = estate.startSell.split('T')[0];
+  setFormData({
+    name: estate.name,
+    images: [],
+    address: estate.address,
+    imageAddress: null,
+    slogan: estate.slogan,
+    price: estate.price,
+    area: estate.area,
+    startSell: formattedStartSell,
+    description: estate.description,
+    status: estate.status,
+    buyerAgentFee: estate.buyerAgentFee,
+    lifestyles: estate.lifestyles,
+    viewDescription: estate.viewDescription,
+    utilities: estate.utilities,
+  });
+  setShowPopup(true);
+  setActiveEstateId(estate._id);  // Lưu id của estate để dùng khi gửi PUT request
+};
+
+  const fetchEstates = async () => {
+    try {
+      const response = await fetch(`${API_URL}/estates`, {
+        method: 'GET',  // GET để lấy dữ liệu
+        credentials: 'include',  // Nếu sử dụng cookies hoặc session
+      });
+
+      if (!response.ok) {
+        console.error("Error fetching estates:", response.statusText);
+        throw new Error('Failed to fetch estates');
+      }
+
+      const data = await response.json();
+      console.log("Estates data:", data);
+      setEstates(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTag === 'estates') {
+      fetchEstates();
+      console.log("Fetching estates for tag:", formData);
+    }
+  }, [activeTag]);
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.topBar}>
+        <div className={styles.groupTags}>
+          {tags.map((tag) => (
+            <div
+              key={tag}
+              className={`${styles.Tag} ${activeTag === tag ? styles.activeTag : ''}`}
+              onClick={() => setActiveTag(tag)}
+            >
+              <img
+                src={`./imagesManage/${tag}.png`}
+                alt={tag.charAt(0).toUpperCase() + tag.slice(1)}
+                className={styles.imageTag}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className={styles.search}>
+          <input
+            type="text"
+            className={styles.searchInput}
+            placeholder="Tìm kiếm..."
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') alert('Tìm kiếm: ' + searchValue);
+            }}
+          />
+          <button
+            className={styles.searchButton}
+            onClick={() => alert('Tìm kiếm: ' + searchValue)}
+            aria-label="Search"
+          >
+            <img src="./imagesManage/search.png" alt="" className={styles.imageSearch} />
+          </button>
+        </div>
+
+        <div className={styles.addButton} onClick={handleAddNewClick}>
+          Thêm mới
+        </div>
+      </div>
+
+      <div className={styles.bodyBar}>
+        {activeTag === 'estates' && estates.length > 0 ? (
+          estates.map((estate) => (
+            <div key={estate._id} className={styles.aEstate}>
+              <div className={styles.imageEstateContainer}>
+                {/* Lấy link ảnh từ mảng images, giả sử lấy ảnh đầu tiên */}
+                <img src={`${BACKEND_URL}/${estate.images[0]}`} alt={estate.name} className={styles.imageEstate} />
+              </div>
+              <div className={styles.nameEstate}>{estate.name}</div>
+              <div className={styles.groupButtons}>
+                <div className={styles.editButton} onClick={() => handleEditClick(estate)}>Chỉnh sửa</div>
+                <div className={styles.deleteEstate} onClick={() => handleDeleteClick(estate._id)}>Xoá</div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div>No content for this tag</div>
+        )}
+      </div>
+
+      {/* Popup nhập liệu chỉ hiện khi showPopup = true */}
+      {showPopup && (
+        <div className={styles.popupOverlay}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              handleClosePopup();  // Chỉ đóng popup khi nhấn ngoài vùng popup
+            }
+          }}
+        >
+          <div className={styles.popup}>
+            <h2>Thêm mới Estate</h2>
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <label>
+                Tên dự án:
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+
+              <label>
+                Ảnh (chọn đúng 5 ảnh):
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImagesChange}
+                />
+              </label>
+
+              <label>
+                Địa chỉ:
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+
+              <label>
+                Ảnh bản đồ (chọn đúng 1 ảnh):
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageAddressChange}
+                />
+              </label>
+
+              <label>
+                Chính sách:
+                <input
+                  type="text"
+                  name="slogan"
+                  value={formData.slogan}
+                  onChange={handleInputChange}
+                />
+              </label>
+
+              <label>
+                Giá (VNĐ/m²):
+                <input
+                  type="text"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  placeholder="xxx.xxx.xxx"
+                  required
+                />
+              </label>
+
+              <label>
+                Quy mô (m²):
+                <input
+                  type="number"
+                  name="area"
+                  value={formData.area}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+
+              <label>
+                Ngày mở bán:
+                <input
+                  type="date"
+                  name="startSell"
+                  value={formData.startSell}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+
+              <label>
+                Mô tả dự án:
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  rows={4}
+                  required
+                />
+              </label>
+
+              <label>
+                Trạng thái (Chưa mở bán, Đang mở bán, Đã bán hết):
+                <input
+                  type="text"
+                  name="status"
+                  value={formData.status}
+                  onChange={handleInputChange}
+                />
+              </label>
+
+              <label>
+                Hoa hồng môi giới (VNĐ):
+                <input
+                  type="text"
+                  name="buyerAgentFee"
+                  value={formData.buyerAgentFee}
+                  onChange={handleInputChange}
+                  placeholder="xxx.xxx.xxx"
+                />
+              </label>
+
+              <label>
+                Phong cách:
+                <input
+                  type="text"
+                  name="lifestyles"
+                  value={formData.lifestyles}
+                  onChange={handleInputChange}
+                />
+              </label>
+
+              <label>
+                Các loại hình:
+                <input
+                  type="text"
+                  name="viewDescription"
+                  value={formData.viewDescription}
+                  onChange={handleInputChange}
+                />
+              </label>
+
+              <label>
+                Tiện ích:
+                <input
+                  type="text"
+                  name="utilities"
+                  value={formData.utilities}
+                  onChange={handleInputChange}
+                />
+              </label>
+
+              <div className={styles.formButtons}>
+                <button type="submit">Đăng</button>
+                <button type="button" onClick={() => handleClosePopup(true)}>
+                  Hủy
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Manage;

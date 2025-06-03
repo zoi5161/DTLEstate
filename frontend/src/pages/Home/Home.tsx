@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './Home.module.css';
 import Navbar from '../../components/NavBar/Navbar';
+import Footer from '../../components/Footer/Footer';
 import Dot from '../../components/Dot/Dot';
 
-// Tách thành 2 mảng smallMembers và bigMembers
 const smallMembers = [
   {
     id: 1,
@@ -35,21 +35,56 @@ const bigMembers = [
   // Các thành viên lớn khác (nếu cần)
 ];
 
+const estates = [
+  {
+    id: 1,
+    title: "Spring Ville",
+    imageUrl: "./imagesHome/springville.jpg",
+    price: "50.000.000 VNĐ/m²",
+  },
+  {
+    id: 2,
+    title: "The Beverly",
+    imageUrl: "./imagesHome/thebeverly.jpg",
+    price: "50.000.000 VNĐ/m²",
+  },
+  {
+    id: 3,
+    title: "The Blanca City",
+    imageUrl: "./imagesHome/theblancacity.jpg",
+    price: "150.000.000 VNĐ/m²",
+  },
+  {
+    id: 4,
+    title: "Lumière Midtown",
+    imageUrl: "./imagesHome/theprive.png",
+    price: "160.000.000 VNĐ/m²",
+  }
+];
+
 const Home: React.FC = () => {
   const [currentSmallIndex, setCurrentSmallIndex] = useState(0);
   const [currentBigIndex, setCurrentBigIndex] = useState(0);
-
-  // Sử dụng useRef để tham chiếu đến phần members
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [prevSlideFading, setPrevSlideFading] = useState(false);
+  const estatesLength = estates.length;
   const membersRef = useRef<HTMLDivElement>(null);
 
-  // Hàm cuộn đến phần members
   const scrollToMembers = () => {
     if (membersRef.current) {
       membersRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  // Hàm để thay đổi index mỗi 5 giây cho small và big member
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + estates.length) % estates.length);
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % estates.length);
+  };
+
+
   useEffect(() => {
     const smallInterval = setInterval(() => {
       setCurrentSmallIndex(Math.floor(Math.random() * smallMembers.length)); // Chọn ngẫu nhiên từ smallMembers
@@ -60,12 +95,18 @@ const Home: React.FC = () => {
     }, 5000); // 5 giây
 
     return () => {
-      clearInterval(smallInterval); // Dọn dẹp interval khi component bị unmount
-      clearInterval(bigInterval); // Dọn dẹp interval khi component bị unmount
+      clearInterval(smallInterval);
+      clearInterval(bigInterval);
     };
   }, []);
 
-  // Lấy 2 thành viên ngẫu nhiên từ các mảng nhỏ và lớn
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    setAnimate(true);
+    window.scrollTo(0, 0);
+  }, []);
+
   const smallMember = smallMembers[currentSmallIndex];
   const bigMember = bigMembers[currentBigIndex];
   
@@ -73,8 +114,8 @@ const Home: React.FC = () => {
     <div className={styles.container}>
       <Navbar />
       <div className={styles.banner}>
-        <div className={styles.descriptionBanner}>ĐƯỢC PHÁT TRIỂN BỞI ĐÔNG TÂY LAND</div>
-        <div className={styles.titleBanner}>Mạng lưới bất động sản <br/>hàng đầu Việt Nam</div>
+        <div className={`${styles.descriptionBanner} ${animate ? styles.animateSlideUp : ''}`}>ĐƯỢC PHÁT TRIỂN BỞI ĐÔNG TÂY LAND</div>
+        <div className={`${styles.titleBanner} ${animate ? styles.animateSlideUp : ''}`}>Mạng lưới bất động sản <br/>hàng đầu Việt Nam</div>
       </div>
 
       <div className={styles.introduction}>
@@ -83,9 +124,25 @@ const Home: React.FC = () => {
           <img className={styles.logoSpy} src="./imagesHome/FullLogoBlack.png" alt="" />
         </div>
         <img className={styles.imageIntroduction} src="./imagesHome/belowTitle.png" alt="Image below Title" />
-        <div className={styles.descriptionIntroduction}>CHÀO MỪNG ĐẾN VỚI SPYESTATE</div>
-        <div className={styles.titleIntroduction}>Nhiệt huyết đỉnh cao<br/>Đam mê vượt trội</div>
-        <div className={styles.contentIntroduction}>SpyEstate là một phần của công ty Đông Tây Land, <br/> mang đến những chuyên gia bất động sản hàng đầu Việt Nam, <br/>với sự hiểu biết sâu rộng và tầm ảnh hưởng đáng kể trong ngành, <br/>chúng tôi rất mong được phục vụ các quý khách hàng.</div>
+        <div className={`${styles.descriptionIntroduction} ${animate ? styles.revealText : ''}`}
+          style={{ animationDelay: '0.2s' }}>
+          CHÀO MỪNG ĐẾN VỚI SPYESTATE
+        </div>
+
+        <div
+          className={`${styles.titleIntroduction} ${animate ? styles.revealText : ''}`}
+          style={{ animationDelay: '1.0s' }}>
+          Nhiệt huyết đỉnh cao<br/>Đam mê vượt trội
+        </div>
+
+        <div
+          className={`${styles.contentIntroduction} ${animate ? styles.revealText : ''}`}
+          style={{ animationDelay: '1.8s' }}>
+          SpyEstate là một phần của công ty Đông Tây Land, <br/> 
+          mang đến góc nhìn trực quan nhất về các bất động sản, <br/>
+          với sự hiểu biết sâu rộng của các chuyên viên cao cấp, <br/>
+          chúng tôi rất mong được phục vụ các quý khách hàng.
+        </div>
       </div>
 
       <div className={styles.services}>
@@ -163,14 +220,94 @@ const Home: React.FC = () => {
         </div>
         <div className={styles.buttonSignUp}>Đăng ký thành viên</div>
       </div>
+
       <div className={styles.mapContainer}>
         <div className={styles.map}>
           <img src="/imagesHome/map.png" alt="Bản đồ" className={styles.mapImage} />
-          <Dot id="TheBlancaCity" top="93.5%" left="64%" infoImage="./imagesHome/theblancacity.jpg" infoTitle="The Blanca City" infoPrice="100.000.000 VNĐ/m²"/>
-          <Dot id="LumiereMidtown" top="43.5%" left="43.3%" infoImage="./imagesHome/lumieremidtown.png" infoTitle="Lumière Midtown" infoPrice="160.000.000 VNĐ/m²"/>
-          <Dot id="ThePrive" top="43.5%" left="41.3%" infoImage="./imagesHome/theprive.png" infoTitle="The Privé" infoPrice="99.000.000 VNĐ/m²"/>
+          <Dot name="The Blanca City" id="TheBlancaCity" top="93.1021%" left="64.021%" infoImage="./imagesHome/theblancacity.jpg" infoTitle="The Blanca City" infoPrice="100.000.000 VNĐ/m²"/>
+          <Dot name="Lumiere Midtown" id="LumiereMidtown" top="43.5%" left="43.3%" infoImage="./imagesHome/lumieremidtown.png" infoTitle="Lumière Midtown" infoPrice="160.000.000 VNĐ/m²"/>
+          <Dot name="The Prive" id="ThePrive" top="43.5%" left="41.3%" infoImage="./imagesHome/theprive.png" infoTitle="The Privé" infoPrice="99.000.000 VNĐ/m²"/>
+          <Dot name="Eco Retreat" id="EcoRetreat" top="59.5%" left="27.3%" infoImage="./imagesHome/ecoretreat.jpg" infoTitle="Eco Retreat" infoPrice="60.000.000 VNĐ/m²"/>
+          <Dot name="La Pura" id="LaPura" top="31.5%" left="39.5%" infoImage="./imagesHome/lapura.png" infoTitle="La Pura" infoPrice="46.000.000 VNĐ/m²"/>
+          <Dot name="The Beverly" id="TheBeverly" top="38.5%" left="47.5%" infoImage="./imagesHome/thebeverly.jpg" infoTitle="The Beverly" infoPrice="48.000.000 VNĐ/m²"/>
+          <Dot name="Spring Ville" id="SpringVille" top="51.7%" left="54%" infoImage="./imagesHome/springville.jpg" infoTitle="Spring Ville" infoPrice="50.000.000 VNĐ/m²"/>
         </div>
       </div>
+
+      <div className={styles.collections}>
+        <div className={styles.topCollections}>
+          <div className={styles.preIntroduction}>SPYESTATE - KẾT NỐI ĐỈNH CAO BẤT ĐỘNG SẢN</div>
+          <div className={styles.titleCollections}>Bất động sản</div>
+          <img className={styles.imageIntroduction} src="./imagesHome/belowTitle.png" alt="Image below Title" />
+          <div className={styles.contentIntroduction}>
+            Từ Sài Gòn đến Phú Quốc, từ Đà Nẵng đến Melbourne, 
+            <br/>SpyEstate – thành viên của Đông Tây Land
+            <br/>đồng hành cùng những thương vụ triệu đô, dự án biểu tượng và 
+            <br/>giao dịch đẳng cấp trong lĩnh vực bất động sản cao cấp.
+          </div>
+        </div>
+        <div className={styles.estateList}>
+          <div className={styles.sliderWrapper}>
+          {estates.map((estate, index) => {
+            let position = "nextSlide";
+            if (index === currentIndex) {
+              position = "activeSlide";
+            } else if (
+              index === (currentIndex - 1 + estates.length) % estates.length
+            ) {
+              position = "prevSlide";
+            }
+
+            return (
+              <div key={estate.id} className={`${styles.slide} ${styles[position]}`}>
+                <img src={estate.imageUrl} alt={estate.title} />
+                {/* Chỉ render overlay nếu đây là slide đang active */}
+                {index === currentIndex && (
+                  <div className={styles.overlay}>
+                      <h3>{estate.title}</h3>
+                      <p>{estate.price}</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+          </div>
+          <div className={styles.groupButton}>
+            <div className={styles.navButton} onClick={prevSlide}>&lt;</div>
+            <div className={styles.navButton} onClick={nextSlide}>&gt;</div>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.invite}>
+        <img src="./imagesHome/inviteBanner.jpg" alt="Block 1" />
+        <div className={styles.memberCard}>
+          <div className={styles.becomeMember}>
+            <div className={styles.titleBecomeMember}>Đăng ký nhận <br/>thông tin hằng tháng</div>
+            <div className={styles.preBecomeMember}>Bạn muốn nhận thông tin về các dự án?</div>
+            <div className={styles.contentBecomeMember}>
+              Đăng ký ngay để trở thành thành viên của SpyEstate, <br/>
+              nhận thông tin về các bất động sản cao cấp, <br/>
+              và được hỗ trợ từ đội ngũ chuyên gia hàng đầu trong ngành.
+            </div>
+            <div className={styles.buttonBecomeMember}>Đăng ký ngay</div>
+          </div>
+          <div className={styles.workWithUs}>
+            <div className={styles.titleBecomeMember}>Tìm hiểu về dự án</div>
+            <div className={styles.preBecomeMember}>Bạn muốn thông tin của dự án nào?</div>
+            <div className={styles.contentBecomeMember}>
+              Chúng tôi cung cấp thông tin chi tiết về các dự án bất động sản cao cấp, <br/>
+              bao gồm giá cả, vị trí, tiện ích và nhiều thông tin khác. <br/>
+              Hãy liên hệ với chúng tôi để được tư vấn và hỗ trợ tốt nhất.
+            </div>
+            <div className={styles.buttonBecomeMember}>Liên hệ</div>
+            <div className={styles.or}>or</div>
+            <div className={styles.phone}>Gọi: 0772134455</div>
+          </div>
+        </div>
+      </div>
+
+      <Footer/>
     </div>
   );
 };

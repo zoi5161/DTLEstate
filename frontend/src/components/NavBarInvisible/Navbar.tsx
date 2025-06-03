@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Navbar.module.css';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [menuActive, setMenuActive] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [logoImage, setLogoImage] = useState("./imagesHome/LogoWhite.png"); // Thêm trạng thái cho logo
+  const [logoImage, setLogoImage] = useState("../imagesHome/LogoBlack.png"); // Thêm trạng thái cho logo
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setMenuActive(!menuActive);
@@ -22,11 +24,9 @@ const Navbar = () => {
     // Kiểm tra xem đã cuộn xuống hay chưa
     if (window.scrollY > 50) { // Điều chỉnh giá trị 50 nếu cần
       setScrolled(true);
-      setLogoImage("./imagesHome/LogoBlack.png"); // Đổi logo khi cuộn xuống
       setMenuActive(false); // Tắt dropdown khi cuộn trang
     } else {
       setScrolled(false);
-      setLogoImage("./imagesHome/LogoWhite.png"); // Trở lại logo trắng khi ở đầu trang
     }
 
     setLastScrollY(window.scrollY);
@@ -34,6 +34,7 @@ const Navbar = () => {
 
   // Hàm cuộn lên đầu trang khi click vào logo
   const scrollToTop = () => {
+    navigate("/");
     window.scrollTo({
       top: 0,
       behavior: 'smooth' // Tạo hiệu ứng cuộn mượt mà

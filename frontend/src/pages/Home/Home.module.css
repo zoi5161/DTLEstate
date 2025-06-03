@@ -1,6 +1,14 @@
+@font-face {
+  font-family: 'MyCustomFont';
+  src: url('../../assets/fonts/SaolDisplay-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 .container {
   text-align: center;
   background-color: #f0f0f0;
+  overflow-x: hidden;
 }
 
 .button {
@@ -55,7 +63,7 @@
   margin: 0 0 50px 100px;
   font-size: 50px;
   text-align: start;
-  font-family: 'Playfair Display', serif;
+  font-family: 'MyCustomFont', serif;
   text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
   font-weight: 100;
   z-index: 10;
@@ -355,8 +363,9 @@
   width: 100%;
   max-width: 1200px;
   aspect-ratio: 1200 / 680;
-  overflow: hidden;
-  border: 2px dashed #464646;
+  overflow: visible;
+  border: 2px solid #464646;
+  z-index: 15;
 }
 
 .mapImage {
@@ -367,6 +376,271 @@
   pointer-events: none;
 }
 
+@keyframes slideUpFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animateSlideUp {
+  animation-name: slideUpFadeIn;
+  animation-duration: 0.8s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+  opacity: 0; /* ban đầu ẩn để animation chạy từ từ */
+}
+
+.collections{
+  width: 100%;
+  padding: 50px 0;
+  /* background-color: red; */
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+}
+
+.titleCollections{
+  font-size: 50px;
+  font-family: 'MyCustomFont', serif;
+  color: black;
+  margin: 30px 0 0 0;
+  color: #646464;
+}
+
+.preIntroduction{
+  font-size: 14px;
+  font-family: 'YourFont', sans-serif;
+  color: #646464;
+  padding-top: 20px;
+}
+
+.estateList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding-top: 100px;
+  width: 100%;
+}
+
+.sliderWrapper {
+  width: 80%; /* tạo khoảng trống 10% hai bên */
+  height: 550px;
+  position: relative;
+  overflow: visible; /* cho phép hình ảnh lộ ra */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slide {
+  position: absolute;
+  width: 90%; /* giảm để thấy phần còn lại */
+  height: 100%;
+  transition: all 0.6s ease;
+  opacity: 0;
+  transform: scale(0.8);
+  z-index: 1;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* ảnh ở giữa */
+.activeSlide {
+  transform: translateX(0%) scale(1);
+  opacity: 1;
+  z-index: 3;
+}
+
+/* ảnh bên trái - lộ khoảng 5% */
+.prevSlide {
+  transform: translateX(-105%) scale(0.8);
+  opacity: 0.6;
+  z-index: 2;
+}
+
+/* ảnh bên phải - lộ khoảng 5% */
+.nextSlide {
+  transform: translateX(105%) scale(0.8);
+  opacity: 0.6;
+  z-index: 2;
+}
+
+.navButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  z-index: 4;
+  color: #333;
+}
+
+.groupButton{
+  width: 72%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0 0 0;
+  gap: 50px;
+}
+
+.overlay {
+  position: absolute;
+  width: 220px;
+  height: 120px;
+  bottom: 0px;
+  left: 0px;
+  background: #EEEAE3;
+  color: black;
+  padding: 0px 0px 0px 20px;
+  border-radius: 0 8px 0 8px;
+  max-width: 70%;
+  text-align: left;
+  font-family: 'MyCustomFont', sans-serif;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  gap: 10px;
+}
+
+.overlay h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.navButtonOverlay{
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 28px;
+  font-weight: bold;
+  z-index: 4;
+  color: #1d1d1d;
+}
+
+.overlay p {
+  margin: 0;
+  font-size: 20px;
+  font-weight: bold;
+  font-weight: 400;
+}
+
+.invite {
+  width: 100%;
+  height: 700px; /* bằng chiều cao ảnh để chứa vừa khít */
+  position: relative; /* tạo context cho vị trí tuyệt đối */
+  overflow: hidden; /* ẩn phần thừa nếu có */
+}
+
+.invite img {
+  width: 100%;
+  height: 700px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.memberCard {
+  position: absolute;
+  width: 80%;
+  height: 80%;
+  top: 10%;
+  left: 200px;
+  z-index: 10;
+  background-color: rgb(193, 194, 162);
+  display: flex;
+}
+
+.becomeMember{
+  width: 50%;
+  height: 100%;
+  background-color: #EEEAE3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+}
+
+.workWithUs{
+  width: 50%;
+  height: 100%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+}
+
+.titleBecomeMember{
+  font-size: 42px;
+  font-family: 'Playfair Display', serif;
+  /* margin: 80px 0 0 0; */
+  color: #464646;
+}
+
+.preBecomeMember{
+  font-size: 14px;
+  font-family: 'YourFont', sans-serif;
+  color: #464646;
+  /* padding-top: 20px; */
+}
+
+.contentBecomeMember{
+  font-size: 16px;
+  font-family: 'YourFont', sans-serif;
+  color: #464646;
+  /* padding-top: 50px; */
+  line-height: 1.5;
+}
+
+.buttonBecomeMember{
+  width: 200px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  /* margin-top: 100px; */
+  border: 1px solid #464646;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.buttonBecomeMember:hover {
+  background-color: black;
+  color: white;
+}
+
+.or{
+  opacity: 0.5;
+  font-size: 14px;
+  font-family: 'YourFont', sans-serif;
+}
+
+.phone{
+  color: #464646;
+  font-size: 14px;
+  font-weight: 100;
+  font-family: 'YourFont', sans-serif;
+}
 
 @media (max-width: 768px) {
   .descriptionBanner {
@@ -498,7 +772,7 @@
   }
 
   .members{
-    height: 80vh !important;
+    height: 80vh;
     background-color: #EEEAE3;
     display: flex;
     flex-direction: column;
@@ -625,5 +899,54 @@
     align-items: center;
     text-align: center;
     gap: 20px;
+  }
+
+  .memberCard {
+    left: 10px;
+    width: 95%;
+    height: 80%;
+  }
+
+  .titleBecomeMember{
+    font-size: 24px;
+    margin-top: 50px;
+  }
+
+  .contentBecomeMember{
+    font-size: 12px;
+    padding: 0 10px;
+    text-align: center;
+  }
+
+  .becomeMember{
+    gap: 40px;
+    justify-content: start;
+  }
+
+  .workWithUs{
+    gap: 40px;
+    justify-content: start;
+  }
+
+  .overlay h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .overlay p {
+    font-size: 18px;
+  }
+
+  .members{
+    gap: 50px;
+  }
+
+  .mapContainer{
+    height: 60vh;
+  }
+
+  .preBecomeMember{
+    font-size: 11px;
   }
 }
