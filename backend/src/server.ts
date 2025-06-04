@@ -5,6 +5,8 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import adminRoutes from './routes/adminRoutes';
 import estateRoutes from './routes/estateRoutes';
+import staffRoutes from './routes/staffRoutes';
+import newsRoutes from './routes/newsRoutes';
 import path from 'path';
 
 dotenv.config();
@@ -27,6 +29,8 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Routes
 app.use('/api', estateRoutes);
+app.use('/api', staffRoutes);
+app.use('/api', newsRoutes);
 app.use('/api/admin', adminRoutes);
 
 const connectDB = async () => {

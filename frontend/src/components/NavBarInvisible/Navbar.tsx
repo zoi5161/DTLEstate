@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import styles from './Navbar.module.css';
 import { useNavigate } from 'react-router-dom';
 
-const Navbar = () => {
+interface NavbarProps {
+  openModal: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ openModal }) => {
   const [menuActive, setMenuActive] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [hidden, setHidden] = useState(false);
@@ -56,6 +60,16 @@ const Navbar = () => {
     };
   }, [lastScrollY]);
 
+  const scrollToId = (id: string) => {
+    navigate("/");
+    setTimeout(() => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 500); // đợi DOM cập nhật xíu rồi scroll
+  };
+
   return (
     <div className={`${styles.navbar} ${hidden ? styles.hidden : ''} ${scrolled ? styles.scrolled : ''}`}>
       <div
@@ -66,9 +80,14 @@ const Navbar = () => {
       </div>
       <div className={`${styles.navList} ${menuActive ? styles.active : ''}`}>
         {/* Áp animation cho từng mục menu */}
-        <div className={animate ? styles.animateSlideUp : ''}>BẤT ĐỘNG SẢN</div>
-        <div className={animate ? styles.animateSlideUp : ''}>VỀ CHÚNG TÔI</div>
-        <div className={animate ? styles.animateSlideUp : ''}>ĐĂNG KÝ</div>
+        <div className={animate ? styles.animateSlideUp : ''} onClick={() => scrollToId("collections")}>
+          BẤT ĐỘNG SẢN
+        </div>
+        <div className={animate ? styles.animateSlideUp : ''} onClick={() => scrollToId("aboutUs")}>
+          VỀ CHÚNG TÔI
+        </div>
+
+        <div className={animate ? styles.animateSlideUp : ''} onClick={openModal}>ĐĂNG KÝ</div>
       </div>
       <div className={styles.menuIcon} onClick={toggleMenu}>
         &#9776;

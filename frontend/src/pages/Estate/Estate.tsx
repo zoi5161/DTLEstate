@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import styles from './Estate.module.css';
 import Navbar from '../../components/NavBarInvisible/Navbar';
+import Footer from '../../components/Footer/Footer';
 
 const API_URL = process.env.REACT_APP_API_URL;
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -10,11 +11,82 @@ const Estate: React.FC = () => {
   const { id } = useParams();
   const location = useLocation();
   const name = location.state?.name;
-
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})$/;
   const [estate, setEstate] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
+  // Trạng thái để hiển thị/ẩn pop-up modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Trạng thái để lưu các giá trị form
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  // Hàm mở modal khi nhấn nút Đăng ký thành viên
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // Hàm đóng modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSignUp = async () => {
+    if (!fullName || !phone || !email) {
+      setError('Vui lòng điền đầy đủ thông tin.');
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      setError('Email không hợp lệ.');
+      return;
+    }
+
+    if (!phoneRegex.test(phone)) {
+      setError('Số điện thoại không hợp lệ.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName,
+          phone,
+          email,
+        }),
+      });
+
+      // Check if the response is valid and has a success status
+      const data = await response.json();
+      console.log('Response:', response);
+
+      if (response.ok) {
+        // If the status is 200-299, it's a success
+        console.log('Đăng ký thành công:', data);
+      } else {
+        // Handle any errors from the API
+        console.error('Lỗi đăng ký:', data);
+        setError(data.message || 'Đã xảy ra lỗi khi đăng ký');
+      }
+    } catch (error) {
+      // Handle network or fetch errors
+      console.error('Lỗi kết nối:', error);
+      setError('Lỗi kết nối. Vui lòng thử lại sau.');
+    }
+
+    setError(null); // Reset lỗi nếu mọi thứ hợp lệ
+    closeModal();
+  };
+ 
   useEffect(() => {
     const fetchEstate = async () => {
       try {
@@ -46,7 +118,7 @@ const Estate: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <Navbar />
+      <Navbar openModal={openModal} />
       <div className={styles.images}>
         <div className={styles.twoImagesBefore}>
           <div className={styles.twoImages}>
@@ -103,7 +175,10 @@ const Estate: React.FC = () => {
           <div className={styles.descriptionTitleText}>Vị Trí</div>
         </div>
         <div className={styles.descriptionContent}>
-          <div className={styles.descriptionContentText}>{estate.description}</div>
+          <div
+            className={styles.descriptionContentText}
+            dangerouslySetInnerHTML={{ __html: estate.description }}
+          />
           <div className={styles.descriptionAddressText}>
             {estate.address}
             <div className={styles.addressImages}>
@@ -197,7 +272,7 @@ const Estate: React.FC = () => {
           <div className={styles.informationInTop}>
             <div className={styles.headerInfo}>
               <div className={styles.imageHeader}>
-                <img src="../imagesEstate/interior.png" alt=""/>
+                <img src="../imagesEstate/policy.png" alt=""/>
               </div>
               <div className={styles.infoHeader}>Chính sách bán hàng</div>
             </div>
@@ -234,6 +309,55 @@ const Estate: React.FC = () => {
           </div>
         </div>
       </div>
+      {/* Pop-up Modal */}
+      {isModalOpen && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <span className={styles.close} onClick={closeModal}>&times;</span>
+            <h2>Đăng ký thành viên</h2>
+            <div className={styles.descriptionModal}>Tham gia SpyEstate – một phần của Đông Tây Land, 
+              <br />cộng đồng bất động sản uy tín, nơi bạn có thể kết nối 
+              <br />với các chuyên gia, tìm kiếm cơ hội đầu tư hấp dẫn và 
+              <br />cập nhật thông tin mới nhất về thị trường.
+              <br /><br />Đăng ký ngay để trở thành thành viên và khám phá những
+              <br />cơ hội độc đáo chỉ có tại SpyEstate!</div>
+            <form onSubmit={(e) => { e.preventDefault(); handleSignUp(); }} className={styles.formSignUp}>
+              <div className={styles.formGroup}>
+                <input
+                  type="text"
+                  id="fullName"
+                  value={fullName}
+                  placeholder='Họ tên'
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <input
+                  type="text"
+                  id="phone"
+                  value={phone}
+                  placeholder='Số điện thoại'
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  placeholder='Email'
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              {error && <div className={styles.error}>{error}</div>} {/* Hiển thị lỗi */}
+              <button type="submit" className={styles.submitButton}>Đăng ký</button>
+            </form>
+          </div>
+        </div>
+      )}
       {selectedImage && (
         <div className={styles.overlay} onClick={() => setSelectedImage(null)}>
           <div className={styles.enlargedImageContainer} onClick={(e) => e.stopPropagation()}>
@@ -242,6 +366,7 @@ const Estate: React.FC = () => {
           </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 };

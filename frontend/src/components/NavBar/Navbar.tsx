@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Navbar.module.css';
 
-const Navbar = () => {
+interface NavbarProps {
+  openModal: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ openModal }) => {
   const [menuActive, setMenuActive] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [hidden, setHidden] = useState(false);
@@ -65,9 +69,23 @@ const Navbar = () => {
       </div>
       <div className={`${styles.navList} ${menuActive ? styles.active : ''}`}>
         {/* Áp animation cho từng mục menu */}
-        <div className={animate ? styles.animateSlideUp : ''}>BẤT ĐỘNG SẢN</div>
-        <div className={animate ? styles.animateSlideUp : ''}>VỀ CHÚNG TÔI</div>
-        <div className={animate ? styles.animateSlideUp : ''}>ĐĂNG KÝ</div>
+          <div className={animate ? styles.animateSlideUp : ''} onClick={() => {
+            const aboutSection = document.getElementById('collections');
+            if (aboutSection) {
+              aboutSection.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}>
+          BẤT ĐỘNG SẢN
+        </div>
+        <div className={animate ? styles.animateSlideUp : ''} onClick={() => {
+            const aboutSection = document.getElementById('aboutUs');
+            if (aboutSection) {
+              aboutSection.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}>
+          VỀ CHÚNG TÔI
+        </div>
+        <div className={animate ? styles.animateSlideUp : ''} onClick={openModal}>ĐĂNG KÝ</div>
       </div>
       <div className={styles.menuIcon} onClick={toggleMenu}>
         &#9776;

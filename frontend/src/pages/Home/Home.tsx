@@ -3,6 +3,7 @@ import styles from './Home.module.css';
 import Navbar from '../../components/NavBar/Navbar';
 import Footer from '../../components/Footer/Footer';
 import Dot from '../../components/Dot/Dot';
+import { useNavigate } from 'react-router-dom';
 
 const smallMembers = [
   {
@@ -38,27 +39,45 @@ const bigMembers = [
 const estates = [
   {
     id: 1,
-    title: "Spring Ville",
+    name: "Spring Ville",
     imageUrl: "./imagesHome/springville.jpg",
     price: "50.000.000 VNĐ/m²",
   },
   {
     id: 2,
-    title: "The Beverly",
+    name: "The Beverly",
     imageUrl: "./imagesHome/thebeverly.jpg",
     price: "50.000.000 VNĐ/m²",
   },
   {
     id: 3,
-    title: "The Blanca City",
+    name: "The Blanca City",
     imageUrl: "./imagesHome/theblancacity.jpg",
     price: "150.000.000 VNĐ/m²",
   },
   {
     id: 4,
-    title: "Lumière Midtown",
+    name: "Lumiere Midtown",
     imageUrl: "./imagesHome/theprive.png",
     price: "160.000.000 VNĐ/m²",
+  },
+  {
+    id: 5,
+    name: "Eco Retreat",
+    imageUrl: "./imagesHome/ecoretreat.jpg",
+    price: "60.000.000 VNĐ/m²",
+  },
+  {
+    id: 6,
+    name: "La Pura",
+    imageUrl: "./imagesHome/lapura.png",
+    price: "46.000.000 VNĐ/m²",
+  },
+  {
+    id: 7,
+    name: "The Prive",
+    imageUrl: "./imagesHome/theprive.png",
+    price: "99.000.000 VNĐ/m²",
   }
 ];
 
@@ -67,12 +86,161 @@ const Home: React.FC = () => {
   const [currentBigIndex, setCurrentBigIndex] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [prevSlideFading, setPrevSlideFading] = useState(false);
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})$/;
   const estatesLength = estates.length;
+  const benefitRef = useRef<HTMLDivElement>(null);
   const membersRef = useRef<HTMLDivElement>(null);
+  const collectionsRef = useRef<HTMLDivElement>(null);
+  const API_URL = process.env.REACT_APP_API_URL;
+  const navigate = useNavigate();
+
+  // Trạng thái để hiển thị/ẩn pop-up modal
+  const [isModalRegisterOpen, setisModalRegisterOpen] = useState(false);
+  const [isModalNewsOpen, setisModalNewsOpen] = useState(false);
+
+  // Trạng thái để lưu các giá trị form
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  // Hàm mở modal khi nhấn nút Đăng ký thành viên
+  const openModalRegister = () => {
+    setisModalRegisterOpen(true);
+  };
+
+  // Hàm đóng modal
+  const closeModalRegister = () => {
+    setisModalRegisterOpen(false);
+  };
+
+  const openModalNews = () => {
+    setisModalNewsOpen(true);
+  };
+
+  // Hàm đóng modal
+  const closeModalNews = () => {
+    setisModalNewsOpen(false);
+  };
+
+  const handleSignUp = async () => {
+    if (!fullName || !phone || !email) {
+      setError('Vui lòng điền đầy đủ thông tin.');
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      setError('Email không hợp lệ.');
+      return;
+    }
+
+    if (!phoneRegex.test(phone)) {
+      setError('Số điện thoại không hợp lệ.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName,
+          phone,
+          email,
+        }),
+      });
+
+      // Check if the response is valid and has a success status
+      const data = await response.json();
+      console.log('Response:', response);
+
+      if (response.ok) {
+        // If the status is 200-299, it's a success
+        console.log('Đăng ký thành công:', data);
+      } else {
+        // Handle any errors from the API
+        console.error('Lỗi đăng ký:', data);
+        setError(data.message || 'Đã xảy ra lỗi khi đăng ký');
+      }
+    } catch (error) {
+      // Handle network or fetch errors
+      console.error('Lỗi kết nối:', error);
+      setError('Lỗi kết nối. Vui lòng thử lại sau.');
+    }
+
+    setError(null); // Reset lỗi nếu mọi thứ hợp lệ
+    closeModalRegister();
+  };
+
+  const handleNews = async () => {
+    if (!fullName || !phone || !email) {
+      setError('Vui lòng điền đầy đủ thông tin.');
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      setError('Email không hợp lệ.');
+      return;
+    }
+
+    if (!phoneRegex.test(phone)) {
+      setError('Số điện thoại không hợp lệ.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/news`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName,
+          phone,
+          email,
+        }),
+      });
+
+      // Check if the response is valid and has a success status
+      const data = await response.json();
+      console.log('Response:', response);
+
+      if (response.ok) {
+        // If the status is 200-299, it's a success
+        console.log('Đăng ký thành công:', data);
+      } else {
+        // Handle any errors from the API
+        console.error('Lỗi đăng ký:', data);
+        setError(data.message || 'Đã xảy ra lỗi khi đăng ký');
+      }
+    } catch (error) {
+      // Handle network or fetch errors
+      console.error('Lỗi kết nối:', error);
+      setError('Lỗi kết nối. Vui lòng thử lại sau.');
+    }
+
+    setError(null); // Reset lỗi nếu mọi thứ hợp lệ
+    closeModalRegister();
+  };
+ 
+  const scrollToBenefit = () => {
+    if (benefitRef.current) {
+      benefitRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const scrollToMembers = () => {
     if (membersRef.current) {
       membersRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const scrollToCollections = () => {
+    if (collectionsRef.current) {
+      collectionsRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -84,6 +252,10 @@ const Home: React.FC = () => {
     setCurrentIndex((prev) => (prev + 1) % estates.length);
   };
 
+  const handleClick = (name: string) => {
+    const formattedName = name.replace(/\s+/g, '');
+    navigate(`/Estate/${formattedName}`, { state: { name } });
+  };
 
   useEffect(() => {
     const smallInterval = setInterval(() => {
@@ -112,13 +284,13 @@ const Home: React.FC = () => {
   
   return (
     <div className={styles.container}>
-      <Navbar />
+      <Navbar openModal={openModalRegister} />
       <div className={styles.banner}>
         <div className={`${styles.descriptionBanner} ${animate ? styles.animateSlideUp : ''}`}>ĐƯỢC PHÁT TRIỂN BỞI ĐÔNG TÂY LAND</div>
         <div className={`${styles.titleBanner} ${animate ? styles.animateSlideUp : ''}`}>Mạng lưới bất động sản <br/>hàng đầu Việt Nam</div>
       </div>
 
-      <div className={styles.introduction}>
+      <div className={styles.introduction} id="aboutUs" ref={membersRef}>
         <div className={styles.logoContainer}>
           <img className={styles.logo} src="./imagesHome/LogoDTL.png" alt="" />
           <img className={styles.logoSpy} src="./imagesHome/FullLogoBlack.png" alt="" />
@@ -146,7 +318,7 @@ const Home: React.FC = () => {
       </div>
 
       <div className={styles.services}>
-        <div className={`${styles.servicesBlock}`}>
+        <div className={`${styles.servicesBlock}`} onClick={scrollToBenefit}>
           <div className={styles.blockWrapper}>
             <img src="./imagesHome/block1.jpg" className={styles.block} alt="" />
           </div>
@@ -159,12 +331,17 @@ const Home: React.FC = () => {
             mang lại giá trị cao nhất.
           </div>
         </div>
-        <div className={`${styles.servicesBlock}`}  onClick={scrollToMembers}>
+        <div className={`${styles.servicesBlock}`} onClick={scrollToMembers}>
           <div className={styles.blockWrapper}>
             {/* Thêm sự kiện onClick vào hình ảnh */}
             <img src="./imagesHome/block2.jpg" className={styles.block} alt="" />
           </div>
-          <div className={styles.titleBlock}>Về chúng tôi</div>
+          <div className={styles.titleBlock} onClick={() => {
+              const aboutSection = document.getElementById('aboutUs');
+              if (aboutSection) {
+                aboutSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}> Về chúng tôi </div>
           <div className={styles.contentBlock}>
             SpyEstate không chỉ là một mạng lưới mà là một cộng<br/>
             đồng. Bằng cách ưu tiên những kết nối ý nghĩa hơn là<br/>
@@ -173,7 +350,7 @@ const Home: React.FC = () => {
             tại những điểm đến hàng đầu trên toàn cầu.
           </div>
         </div>
-        <div className={`${styles.servicesBlock}`}>
+        <div className={`${styles.servicesBlock}`}  onClick={scrollToCollections}>
           <div className={styles.blockWrapper}>
             <img src="./imagesHome/block3.jpg" className={styles.block} alt="" />
           </div>
@@ -188,7 +365,7 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      <div className={styles.members} ref={membersRef}>
+      <div className={styles.members} ref={benefitRef} >
         <div className={styles.titleMember}>
           Những Tên Tuổi Được Tin Cậy Nhất <br/>
           Trong Ngành Bất Động Sản Cao Cấp
@@ -218,7 +395,7 @@ const Home: React.FC = () => {
           <br/><br/>
           Với hơn 10 năm hoạt động, Đông Tây Land đã thực hiện hàng trăm dự án lớn, góp phần vào việc phát triển những khu đô thị hiện đại và các dự án bất động sản nổi bật. Chính nhờ vào đội ngũ chuyên viên tài năng và tận tâm, Đông Tây Land đã ghi dấu ấn với hàng nghìn khách hàng hài lòng và tiếp tục khẳng định là một trong những tên tuổi hàng đầu trong ngành bất động sản tại Việt Nam.
         </div>
-        <div className={styles.buttonSignUp}>Đăng ký thành viên</div>
+        <div className={styles.buttonSignUp} onClick={openModalRegister}>Đăng ký thành viên</div>
       </div>
 
       <div className={styles.mapContainer}>
@@ -234,7 +411,7 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      <div className={styles.collections}>
+      <div className={styles.collections} ref={collectionsRef} id="collections">
         <div className={styles.topCollections}>
           <div className={styles.preIntroduction}>SPYESTATE - KẾT NỐI ĐỈNH CAO BẤT ĐỘNG SẢN</div>
           <div className={styles.titleCollections}>Bất động sản</div>
@@ -259,12 +436,12 @@ const Home: React.FC = () => {
             }
 
             return (
-              <div key={estate.id} className={`${styles.slide} ${styles[position]}`}>
-                <img src={estate.imageUrl} alt={estate.title} />
+              <div key={estate.id} className={`${styles.slide} ${styles[position]}`} onClick={() => handleClick(estate.name)}>
+                <img src={estate.imageUrl} alt={estate.name} />
                 {/* Chỉ render overlay nếu đây là slide đang active */}
                 {index === currentIndex && (
                   <div className={styles.overlay}>
-                      <h3>{estate.title}</h3>
+                      <h3>{estate.name}</h3>
                       <p>{estate.price}</p>
                   </div>
                 )}
@@ -290,7 +467,7 @@ const Home: React.FC = () => {
               nhận thông tin về các bất động sản cao cấp, <br/>
               và được hỗ trợ từ đội ngũ chuyên gia hàng đầu trong ngành.
             </div>
-            <div className={styles.buttonBecomeMember}>Đăng ký ngay</div>
+            <div className={styles.buttonBecomeMember} onClick={openModalNews}>Đăng ký ngay</div>
           </div>
           <div className={styles.workWithUs}>
             <div className={styles.titleBecomeMember}>Tìm hiểu về dự án</div>
@@ -302,11 +479,108 @@ const Home: React.FC = () => {
             </div>
             <div className={styles.buttonBecomeMember}>Liên hệ</div>
             <div className={styles.or}>or</div>
-            <div className={styles.phone}>Gọi: 0772134455</div>
+            <div className={styles.phone}>Liên hệ: 0772134455</div>
           </div>
         </div>
       </div>
 
+      {/* Pop-up Modal */}
+      {isModalRegisterOpen && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <span className={styles.close} onClick={closeModalRegister}>&times;</span>
+            <h2>Đăng ký thành viên</h2>
+            <div className={styles.descriptionModal}>Tham gia SpyEstate – một phần của Đông Tây Land, 
+              <br />cộng đồng bất động sản uy tín, nơi bạn có thể kết nối 
+              <br />với các chuyên gia, tìm kiếm cơ hội đầu tư hấp dẫn và 
+              <br />cập nhật thông tin mới nhất về thị trường.
+              <br /><br />Đăng ký ngay để trở thành thành viên và khám phá những
+              <br />cơ hội độc đáo chỉ có tại SpyEstate!</div>
+            <form onSubmit={(e) => { e.preventDefault(); handleSignUp(); }}>
+              <div className={styles.formGroup}>
+                <input
+                  type="text"
+                  id="fullName"
+                  value={fullName}
+                  placeholder='Họ tên'
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <input
+                  type="text"
+                  id="phone"
+                  value={phone}
+                  placeholder='Số điện thoại'
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  placeholder='Email'
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              {error && <div className={styles.error}>{error}</div>} {/* Hiển thị lỗi */}
+              <button type="submit" className={styles.submitButton}>Đăng ký</button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Pop-up News */}
+      {isModalNewsOpen && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <span className={styles.close} onClick={closeModalNews}>&times;</span>
+            <h2>Đăng ký nhận thông tin <br /> dự án hàng tháng</h2>
+            <div className={styles.descriptionModal}>Đăng ký nhận thông tin dự án hàng tháng từ SpyEstate 
+              <br />Cập nhật các cơ hội đầu tư, thông tin mới nhất
+              <br /> về bất động sản và những dự án hấp dẫn. 
+              <br /> <br />Đừng bỏ lỡ cơ hội để nắm bắt xu hướng thị trường bất động sản!</div>
+            <form onSubmit={(e) => { e.preventDefault(); handleNews(); }}>
+              <div className={styles.formGroup}>
+                <input
+                  type="text"
+                  id="fullName"
+                  value={fullName}
+                  placeholder='Họ tên'
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <input
+                  type="text"
+                  id="phone"
+                  value={phone}
+                  placeholder='Số điện thoại'
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  placeholder='Email'
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              {error && <div className={styles.error}>{error}</div>} {/* Hiển thị lỗi */}
+              <button type="submit" className={styles.submitButton}>Đăng ký</button>
+            </form>
+          </div>
+        </div>
+      )}
       <Footer/>
     </div>
   );

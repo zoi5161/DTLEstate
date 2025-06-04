@@ -94,7 +94,6 @@
   opacity: 0; /* ẩn ban đầu, khi animation chạy sẽ hiện */
 }
 
-
 @media (max-width: 768px) {
   .navbar {
     padding: 10px 20px;

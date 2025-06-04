@@ -144,26 +144,27 @@ const handleDeleteClick = async (estateId: string) => {
       formPayload.append('imageAddress', formData.imageAddress);
     }
 
-    const url = activeEstateId ? `${API_URL}/estates/${activeEstateId}` : `${API_URL}/estates`;  // Nếu có activeEstateId, gửi PUT, nếu không gửi POST
+    const url = activeEstateId ? `${API_URL}/estates/${activeEstateId}` : `${API_URL}/estates`;
+    try {
+      const res = await fetch(url, {
+        method: activeEstateId ? 'PUT' : 'POST',
+        body: formPayload,
+      });
 
-    // PUT hoặc POST request tùy thuộc vào việc có ID hay không
-    const res = await fetch(url, {
-      method: activeEstateId ? 'PUT' : 'POST',
-      body: formPayload,
-    });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Lỗi server');
+      }
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.message || 'Lỗi server');
+      const data = await res.json();
+      alert(`Cập nhật thành công estate: ${data.name}`);
+
+      handleClosePopup(true);
+    } catch (error) {
+      alert('Có lỗi xảy ra: ' + error);
+      console.error(error);
     }
-
-    const data = await res.json();
-    alert(`Cập nhật thành công estate: ${data.name}`);
-
-    // Tắt popup và reset form
-    handleClosePopup(true);
   };
-
 
   const handleEditClick = (estate: any) => {
   // Lấy thông tin estate và hiển thị trong form
@@ -398,13 +399,12 @@ const handleDeleteClick = async (estateId: string) => {
               </label>
 
               <label>
-                Hoa hồng môi giới (VNĐ):
+                Hoa hồng môi giới (%):
                 <input
                   type="text"
                   name="buyerAgentFee"
                   value={formData.buyerAgentFee}
                   onChange={handleInputChange}
-                  placeholder="xxx.xxx.xxx"
                 />
               </label>
 
