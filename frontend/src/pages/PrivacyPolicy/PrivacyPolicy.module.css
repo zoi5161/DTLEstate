@@ -1,0 +1,187 @@
+.container{
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #e2e0de;
+}
+
+.privacyPolicyHeader {
+    width: 100%;
+    height: 300px;
+    background-color: #ebded1;
+    display: flex;
+    justify-content: start;
+    align-items: end;
+    padding: 0 0 50px 80px;
+    font-size: 52px;
+    font-family: 'Playfair Display', serif;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.privacyPolicyBody {
+    width: 90%;
+    line-height: 1.6;
+    color: #333;
+    font-family: 'Playfair Display', serif;
+    padding-bottom: 20px;
+}
+
+h2 {
+  font-size: 1.8rem;
+  color: #444;
+  margin-top: 30px;
+}
+
+h3 {
+  font-size: 1.4rem;
+  color: #555;
+  margin-top: 20px;
+}
+
+p {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+ul {
+  margin-left: 20px;
+  list-style-type: disc;
+}
+
+ul li {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #666;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+strong {
+  font-weight: bold;
+}
+
+.privacyPolicyBody a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.privacyPolicyBody a:hover {
+  text-decoration: underline;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Đảm bảo modal luôn ở trên các phần tử khác */
+}
+
+/* Nội dung Modal */
+.modalContent {
+  background-color: white;
+  padding: 20px 10px 30px 20px;
+  border-radius: 8px;
+  width: 600px;
+  max-width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modalContent h2{
+  font-size: 32px;
+  margin-bottom: 20px;
+  font-family: 'MyCustomFont', serif;
+  color: #464646;
+}
+
+.descriptionModal{
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  color: #464646;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* Nút đóng Modal */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Style cho Form */
+.formSignUp {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.formGroup {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 90%;
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: #f3f1ef;
+  color: #717171;
+  border: none;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+button.submitButton {
+  background-color: #ecd9c7;
+  color: rgb(100, 100, 100);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 90%;
+}
+
+button.submitButton:hover {
+  background-color: #e8bb92;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
+  text-align: center;
+}

@@ -103,6 +103,7 @@
   border-radius: 15px;
   overflow-y: auto;
   display: flex;
+  align-items: center;
   flex-direction: column;
   gap: 30px;
 }
@@ -124,6 +125,8 @@
   font-size: 1rem;
   padding: 6px 10px;
   border-radius: 20px;
+  margin: 0;
+  background-color: white;
 }
 
 .searchButton {
@@ -232,7 +235,7 @@
   align-items: center;
   justify-content: space-between;
   border-radius: 10px;
-  background-color: rgba(46, 46, 46, 0.438);
+  background-color: rgba(192, 193, 166, 0.438);
   color: white;
 }
 
@@ -290,4 +293,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.newsItem{
+  width: 100%;
+  min-height: 50px;
+  max-height: 50px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-radius: 10px;
+  background-color: rgba(192, 193, 166, 0.438);
+}
+
+.disabledButton {
+  user-select: none;
+  color: #EEEAE3;
+  pointer-events: none;
+  background: none;
+  opacity: 0.5;
 }

@@ -2,13 +2,15 @@ import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import styles from './Manage.module.css';
 
 const Manage: React.FC = () => {
-  const tags = ['estates', 'customers', 'members'];
+  const tags = ['estates', 'customers', 'members', 'hots'];
   const [activeTag, setActiveTag] = useState<string>('estates');
   const [searchValue, setSearchValue] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [estates, setEstates] = useState<any[]>([]);
-  const [activeEstateId, setActiveEstateId] = useState<string | null>(null);  // Khai báo state để lưu ID của estate
-
+  const [activeEstateId, setActiveEstateId] = useState<string | null>(null);
+  const [news, setNews] = useState<any[]>([]);
+  const [staff, setStaff] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
   const API_URL = process.env.REACT_APP_API_URL;
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -29,21 +31,42 @@ const Manage: React.FC = () => {
     utilities: '',
   });
 
+  const filteredEstates = estates.filter((estate) => 
+    estate.name.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
+  const filteredNews = news.filter((item) => 
+    item.fullName.toLowerCase().includes(searchValue.toLowerCase()) ||
+    item.phone.toLowerCase().includes(searchValue.toLowerCase()) ||
+    item.email.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
+  const filteredStaff = staff.filter((item) => 
+    item.fullName.toLowerCase().includes(searchValue.toLowerCase()) ||
+    item.phone.toLowerCase().includes(searchValue.toLowerCase()) ||
+    item.email.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
+  const filteredProjects = projects.filter((project) => 
+    project.fullName.toLowerCase().includes(searchValue.toLowerCase()) ||
+    project.phone.toLowerCase().includes(searchValue.toLowerCase()) ||
+    project.email.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
   // Handle input change cho các input thường
-const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-  const { name, value } = e.target;
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
 
-  // Nếu là trường startSell, chuyển đổi giá trị trước khi gán
-  if (name === 'startSell') {
-    const dateValue = new Date(value); // Tạo đối tượng Date từ giá trị input
-    const formattedDate = dateValue.toISOString().split('T')[0]; // Chuyển đổi thành định dạng YYYY-MM-DD
-    setFormData((prev) => ({ ...prev, [name]: formattedDate }));
-  } else {
-    // Các trường khác xử lý bình thường
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  }
-};
-
+    // Nếu là trường startSell, chuyển đổi giá trị trước khi gán
+    if (name === 'startSell') {
+      const dateValue = new Date(value); // Tạo đối tượng Date từ giá trị input
+      const formattedDate = dateValue.toISOString().split('T')[0]; // Chuyển đổi thành định dạng YYYY-MM-DD
+      setFormData((prev) => ({ ...prev, [name]: formattedDate }));
+    } else {
+      // Các trường khác xử lý bình thường
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
 
   // Handle chọn nhiều ảnh images
   const handleImagesChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -60,36 +83,34 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement
   };
 
   // Mở popup khi nhấn thêm mới nếu activeTag === 'estates'
-const handleAddNewClick = () => {
-  if (activeTag === 'estates') {
-    setShowPopup(true);
-    setActiveEstateId(null); // Reset ID khi nhấn "Thêm mới"
-  }
-};
-
-const handleDeleteClick = async (estateId: string) => {
-  if (window.confirm("Are you sure you want to delete this estate?")) {
-    try {
-      const response = await fetch(`${API_URL}/estates/${estateId}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error deleting estate');
-      }
-
-      // Cập nhật lại danh sách estate sau khi xóa
-      alert('Estate deleted successfully');
-      setEstates((prevEstates) => prevEstates.filter((estate) => estate._id !== estateId));
-    } catch (error) {
-      alert('Failed to delete estate: ' + error);
-      console.error(error);
+  const handleAddNewClick = () => {
+    if (activeTag === 'estates') {
+      setShowPopup(true);
+      setActiveEstateId(null); // Reset ID khi nhấn "Thêm mới"
     }
-  }
-};
+  };
 
+  const handleDeleteClick = async (estateId: string) => {
+    if (window.confirm("Are you sure you want to delete this estate?")) {
+      try {
+        const response = await fetch(`${API_URL}/estates/${estateId}`, {
+          method: 'DELETE',
+        });
 
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Error deleting estate');
+        }
+
+        // Cập nhật lại danh sách estate sau khi xóa
+        alert('Estate deleted successfully');
+        setEstates((prevEstates) => prevEstates.filter((estate) => estate._id !== estateId));
+      } catch (error) {
+        alert('Failed to delete estate: ' + error);
+        console.error(error);
+      }
+    }
+  };
 
   // Đóng popup
   const handleClosePopup = (clearForm: boolean = false) => {
@@ -187,7 +208,7 @@ const handleDeleteClick = async (estateId: string) => {
   });
   setShowPopup(true);
   setActiveEstateId(estate._id);  // Lưu id của estate để dùng khi gửi PUT request
-};
+  };
 
   const fetchEstates = async () => {
     try {
@@ -209,10 +230,69 @@ const handleDeleteClick = async (estateId: string) => {
     }
   };
 
+  const fetchNews = async () => {
+    try {
+      const response = await fetch(`${API_URL}/news`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch news');
+      }
+
+      const data = await response.json();
+      setNews(data);
+    } catch (error) {
+      console.error('Error fetching news:', error);
+    }
+  };
+
+  const fetchStaff = async () => {
+    try {
+      const response = await fetch(`${API_URL}/staffs`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch staff');
+      }
+
+      const data = await response.json();
+      setStaff(data);  // Store fetched staff data
+    } catch (error) {
+      console.error('Error fetching staff:', error);
+    }
+  };
+
+  const fetchProjects = async () => {
+    try {
+      const response = await fetch(`${API_URL}/projects`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch projects');
+      }
+
+      const data = await response.json();
+      setProjects(data);  // Store fetched projects data
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    }
+  };
+
   useEffect(() => {
     if (activeTag === 'estates') {
       fetchEstates();
-      console.log("Fetching estates for tag:", formData);
+    } else if (activeTag === 'customers') {
+      fetchNews();
+    } else if (activeTag === 'members') {
+      fetchStaff();
+    } else if (activeTag === 'hots') {
+      fetchProjects();  // Fetch projects when 'hots' tag is active
     }
   }, [activeTag]);
 
@@ -243,7 +323,10 @@ const handleDeleteClick = async (estateId: string) => {
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') alert('Tìm kiếm: ' + searchValue);
+              if (e.key === 'Enter') {
+                // Optionally, handle search on Enter key press
+                alert('Tìm kiếm: ' + searchValue);
+              }
             }}
           />
           <button
@@ -255,17 +338,16 @@ const handleDeleteClick = async (estateId: string) => {
           </button>
         </div>
 
-        <div className={styles.addButton} onClick={handleAddNewClick}>
+        <div className={`${styles.addButton} ${activeTag === 'estates' ? '' : styles.disabledButton}`} onClick={activeTag === 'estates' ? handleAddNewClick : undefined}>
           Thêm mới
         </div>
       </div>
 
       <div className={styles.bodyBar}>
-        {activeTag === 'estates' && estates.length > 0 ? (
-          estates.map((estate) => (
+        {activeTag === 'estates' && filteredEstates.length > 0 ? (
+          filteredEstates.map((estate) => (
             <div key={estate._id} className={styles.aEstate}>
               <div className={styles.imageEstateContainer}>
-                {/* Lấy link ảnh từ mảng images, giả sử lấy ảnh đầu tiên */}
                 <img src={`${BACKEND_URL}/${estate.images[0]}`} alt={estate.name} className={styles.imageEstate} />
               </div>
               <div className={styles.nameEstate}>{estate.name}</div>
@@ -275,11 +357,35 @@ const handleDeleteClick = async (estateId: string) => {
               </div>
             </div>
           ))
+        ) : activeTag === 'customers' && filteredNews.length > 0 ? (
+          filteredNews.map((item) => (
+            <div key={item._id} className={styles.newsItem}>
+              <div className={styles.newsFullName}>{item.fullName}</div>
+              <div className={styles.newsPhone}>{item.phone}</div>
+              <div className={styles.newsEmail}>{item.email}</div>
+            </div>
+          ))
+        ) : activeTag === 'members' && filteredStaff.length > 0 ? (
+          filteredStaff.map((item) => (
+            <div key={item._id} className={styles.newsItem}>
+              <div className={styles.staffFullName}>{item.fullName}</div>
+              <div className={styles.staffPhone}>{item.phone}</div>
+              <div className={styles.staffEmail}>{item.email}</div>
+            </div>
+          ))
+        ) : activeTag === 'hots' && filteredProjects.length > 0 ? (
+          filteredProjects.map((project) => (
+            <div key={project._id} className={styles.newsItem}>
+              <div className={styles.projectFullName}>{project.fullName}</div>
+              <div className={styles.projectPhone}>{project.phone}</div>
+              <div className={styles.projectEmail}>{project.email}</div>
+              <div className={styles.projectSelected}>{project.selectedProject}</div>
+            </div>
+          ))
         ) : (
           <div>No content for this tag</div>
         )}
       </div>
-
       {/* Popup nhập liệu chỉ hiện khi showPopup = true */}
       {showPopup && (
         <div className={styles.popupOverlay}

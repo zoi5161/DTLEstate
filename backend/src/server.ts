@@ -7,6 +7,7 @@ import adminRoutes from './routes/adminRoutes';
 import estateRoutes from './routes/estateRoutes';
 import staffRoutes from './routes/staffRoutes';
 import newsRoutes from './routes/newsRoutes';
+import projectsRoutes from './routes/projectsRoutes';
 import path from 'path';
 
 dotenv.config();
@@ -31,6 +32,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/api', estateRoutes);
 app.use('/api', staffRoutes);
 app.use('/api', newsRoutes);
+app.use('/api', projectsRoutes);
 app.use('/api/admin', adminRoutes);
 
 const connectDB = async () => {

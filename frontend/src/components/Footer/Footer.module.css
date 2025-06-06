@@ -20,6 +20,7 @@
 
 .topFooter img{
     width: 150px;
+    cursor: pointer;
 }
 
 .leftTopFooter{
@@ -79,4 +80,61 @@
     border-left: 1.5px solid #8f8f8f;
     border-right: 1.5px solid #8f8f8f;
     padding: 0 20px;
+}
+
+.phone {
+  cursor: pointer;
+}
+
+.phone:hover {
+  text-decoration: underline;
+}
+
+.noneHref{
+    text-decoration: none;
+    color: inherit;
+}
+
+@media (max-width: 768px) {
+    .topFooter img{
+        width: 80px;
+    }
+
+    .leftTopFooter{
+        width: 70%;
+    }
+
+    .rightTopFooter{
+        width: 30%;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .groupInfo{
+        font-size: 16px;
+    }
+
+    .rightTopFooter img{
+        width: 30px;
+        height: 30px;
+    }
+
+    .phone {
+        color: #000dff;  /* Màu sắc của số điện thoại */
+        text-decoration: underline;  /* Gạch chân để gợi ý rằng người dùng có thể nhấn vào */
+        cursor: pointer;  /* Hiển thị con trỏ chuột như kiểu nhấp chuột */
+        transition: color 0.3s;  /* Hiệu ứng chuyển màu khi hover */
+    }
+
+    .belowFooter{
+        width: 90%;
+    }
+
+    .textBelowFooter{
+        font-size: 12px;
+    }
+
+    .footerContainer{
+        padding: 20px 5px 0 5px;
+    }
 }

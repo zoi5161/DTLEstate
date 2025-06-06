@@ -117,6 +117,7 @@
   width: 150px;
   margin: 40px 0 0 0;
   -webkit-user-drag: none;
+  cursor: pointer;
 }
 
 .logoContainer{
@@ -489,13 +490,18 @@
   color: #333;
 }
 
+.navButton img{
+  width: 20px;
+  height: 20px;
+}
+
 .groupButton{
   width: 72%;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 40px 0 0 0;
-  gap: 50px;
+  gap: 70px;
 }
 
 .overlay {
@@ -547,14 +553,10 @@
   height: 700px; /* bằng chiều cao ảnh để chứa vừa khít */
   position: relative; /* tạo context cho vị trí tuyệt đối */
   overflow: hidden; /* ẩn phần thừa nếu có */
-}
-
-.invite img {
-  width: 100%;
-  height: 700px;
-  object-fit: cover;
-  object-position: center;
-  display: block;
+  background-image: url('../../../public/imagesHome/inviteBanner.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 .memberCard {
@@ -636,11 +638,26 @@
   font-family: 'YourFont', sans-serif;
 }
 
-.phone{
+.phoneGroup{
   color: #464646;
   font-size: 14px;
   font-weight: 100;
   font-family: 'YourFont', sans-serif;
+  display: flex;
+  gap: 5px;
+}
+
+.phone {
+  cursor: pointer;
+}
+
+.phone:hover {
+  text-decoration: underline;
+}
+
+.noneHref{
+    text-decoration: none;
+    color: inherit;
 }
 
 
@@ -702,7 +719,7 @@ label {
 }
 
 input {
-  width: 80%;
+  width: 90%;
   padding: 10px 15px;
   font-size: 16px;
   background-color: #f3f1ef;
@@ -720,7 +737,7 @@ button.submitButton {
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
-  width: 80%;
+  width: 90%;
 }
 
 /* Hiệu ứng khi di chuột qua nút đăng ký */
@@ -736,6 +753,44 @@ button.submitButton:hover {
   text-align: center;
 }
 
+/* Dropdown (Select) */
+.formGroup select {
+  width: 90%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  background-color: #fff;
+  cursor: pointer;
+  appearance: none; /* Đảm bảo dropdown đẹp trên tất cả trình duyệt */
+  -webkit-appearance: none; /* Safari */
+  -moz-appearance: none; /* Firefox */
+  position: relative;
+}
+
+.formGroup select:focus {
+  border-color: #919191;
+  outline: none;
+}
+
+.formGroup select::after {
+  content: '▼';
+  font-size: 18px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.formGroup {
+  position: relative;
+}
+
+.formGroup select::-ms-expand {
+  display: none;
+}
 
 @media (max-width: 768px) {
   .descriptionBanner {
@@ -1019,7 +1074,7 @@ button.submitButton:hover {
   }
 
   .workWithUs{
-    gap: 40px;
+    gap: 30px;
     justify-content: start;
   }
 
@@ -1038,10 +1093,23 @@ button.submitButton:hover {
   }
 
   .mapContainer{
+    display: none;
     height: 60vh;
   }
 
   .preBecomeMember{
     font-size: 11px;
+    padding: 0 14px;
+  }
+
+  .buttonBecomeMember{
+    width: 130px;
+    height: 35px;
+    margin-top: 20px;
+    font-size: 12px;
+  }
+
+  .phoneGroup{
+    font-size: 12px;
   }
 }

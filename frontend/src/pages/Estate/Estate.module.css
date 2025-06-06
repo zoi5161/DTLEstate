@@ -438,7 +438,7 @@
   background-color: white;
   padding: 20px 10px 30px 20px;
   border-radius: 8px;
-  width: 600px;
+  width: 700px;
   max-width: 90%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -472,6 +472,14 @@
   cursor: pointer;
 }
 
+form{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Style cho Form */
 .formSignUp {
   width: 100%;
@@ -497,7 +505,7 @@ label {
 }
 
 input {
-  width: 80%;
+  width: 90%;
   padding: 10px 15px;
   font-size: 16px;
   background-color: #f3f1ef;
@@ -515,7 +523,7 @@ button.submitButton {
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
-  width: 80%;
+  width: 90%;
 }
 
 /* Hiệu ứng khi di chuột qua nút đăng ký */
@@ -529,6 +537,24 @@ button.submitButton:hover {
   margin-top: 10px;
   font-size: 14px;
   text-align: center;
+}
+
+.buttonContact{
+  width: 200px;
+  height: 30px;
+  padding: 10px 30px;
+  border: 1.5px solid rgb(161, 161, 161);
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 50px;
+  cursor: pointer;
+}
+
+.buttonContact:hover{
+  background-color: black;
+  color: white;
 }
 
 @media (max-width: 768px) {

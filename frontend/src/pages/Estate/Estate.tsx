@@ -19,12 +19,22 @@ const Estate: React.FC = () => {
 
   // Trạng thái để hiển thị/ẩn pop-up modal
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalContactOpen, setisModalContactOpen] = useState(false);
 
   // Trạng thái để lưu các giá trị form
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [selectedProject, setSelectedProject] = useState('');
+
+  const openModalContact = () => {
+    setisModalContactOpen(true);
+  };
+
+  const closeModalContact = () => {
+    setisModalContactOpen(false);
+  };
 
   // Hàm mở modal khi nhấn nút Đăng ký thành viên
   const openModal = () => {
@@ -85,6 +95,62 @@ const Estate: React.FC = () => {
 
     setError(null); // Reset lỗi nếu mọi thứ hợp lệ
     closeModal();
+  };
+
+  const handleContact = async () => {
+    // Kiểm tra các trường thông tin bắt buộc
+    if (!fullName || !phone || !email) {
+      setError('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
+
+    // Kiểm tra định dạng email
+    if (!emailRegex.test(email)) {
+      setError('Email không hợp lệ.');
+      return;
+    }
+
+    // Kiểm tra định dạng số điện thoại
+    if (!phoneRegex.test(phone)) {
+      setError('Số điện thoại không hợp lệ.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/projects`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName,
+          phone,
+          email,
+          selectedProject: estate.name,
+        }),
+      });
+
+      // Kiểm tra phản hồi từ API
+      const data = await response.json();
+      console.log('Response:', response);
+
+      if (response.ok) {
+        // Nếu phản hồi thành công (status 200-299)
+        console.log('Đăng ký thành công:', data);
+      } else {
+        // Nếu có lỗi từ API
+        console.error('Lỗi đăng ký:', data);
+        setError(data.message || 'Đã xảy ra lỗi khi đăng ký');
+      }
+    } catch (error) {
+      // Xử lý lỗi mạng hoặc fetch
+      console.error('Lỗi kết nối:', error);
+      setError('Lỗi kết nối. Vui lòng thử lại sau.');
+    }
+
+    // Reset lỗi nếu mọi thứ hợp lệ
+    setError(null);
+    closeModalContact();
   };
  
   useEffect(() => {
@@ -309,6 +375,9 @@ const Estate: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <div className={styles.buttonContact} onClick={openModalContact}>Nhận thêm thông tin dự án</div>
+
       {/* Pop-up Modal */}
       {isModalOpen && (
         <div className={styles.modal}>
@@ -358,6 +427,60 @@ const Estate: React.FC = () => {
           </div>
         </div>
       )}
+      {/* Pop-up Projects */}
+      {isModalContactOpen && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <span className={styles.close} onClick={closeModalContact}>&times;</span>
+            <h2>Nhận thêm thông tin về dự án {estate.name}</h2>
+            <div className={styles.descriptionModal}>
+              Đăng ký nhận thông tin về các dự án để luôn cập nhật những cơ hội
+              <br /> đầu tư hấp dẫn và tin tức mới nhất. Bạn sẽ nhận được
+              <br /> thông báo về tiến độ, cơ hội đặc biệt, cũng
+              <br /> như các thay đổi quan trọng từ các dự
+              <br /> án uy tín. 
+              
+              <br /><br />Đừng bỏ lỡ cơ hội để nắm bắt thông tin kịp thời
+              <br /> và đưa ra quyết định đầu tư chính xác!
+            </div>
+            <form onSubmit={(e) => { e.preventDefault(); handleContact(); }}>
+              <div className={styles.formGroup}>
+                <input
+                  type="text"
+                  id="fullName"
+                  value={fullName}
+                  placeholder="Họ tên"
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <input
+                  type="text"
+                  id="phone"
+                  value={phone}
+                  placeholder="Số điện thoại"
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  placeholder="Email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              {error && <div className={styles.error}>{error}</div>}
+              <button type="submit" className={styles.submitButton}>Đăng ký</button>
+            </form>
+          </div>
+        </div>
+      )}
+      
       {selectedImage && (
         <div className={styles.overlay} onClick={() => setSelectedImage(null)}>
           <div className={styles.enlargedImageContainer} onClick={(e) => e.stopPropagation()}>

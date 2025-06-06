@@ -98,19 +98,19 @@ const Home: React.FC = () => {
   // Trạng thái để hiển thị/ẩn pop-up modal
   const [isModalRegisterOpen, setisModalRegisterOpen] = useState(false);
   const [isModalNewsOpen, setisModalNewsOpen] = useState(false);
+  const [isModalProjectsOpen, setisModalProjectsOpen] = useState(false);
 
   // Trạng thái để lưu các giá trị form
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
+  const [selectedProject, setSelectedProject] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  // Hàm mở modal khi nhấn nút Đăng ký thành viên
   const openModalRegister = () => {
     setisModalRegisterOpen(true);
   };
 
-  // Hàm đóng modal
   const closeModalRegister = () => {
     setisModalRegisterOpen(false);
   };
@@ -119,9 +119,16 @@ const Home: React.FC = () => {
     setisModalNewsOpen(true);
   };
 
-  // Hàm đóng modal
   const closeModalNews = () => {
     setisModalNewsOpen(false);
+  };
+
+  const openModalProjects = () => {
+    setisModalProjectsOpen(true);
+  };
+
+  const closeModalProjects = () => {
+    setisModalProjectsOpen(false);
   };
 
   const handleSignUp = async () => {
@@ -223,7 +230,63 @@ const Home: React.FC = () => {
     }
 
     setError(null); // Reset lỗi nếu mọi thứ hợp lệ
-    closeModalRegister();
+    closeModalNews();
+  };
+
+  const handleProjects = async () => {
+    // Kiểm tra các trường thông tin bắt buộc
+    if (!fullName || !phone || !email || !selectedProject) {
+      setError('Vui lòng điền đầy đủ thông tin và chọn một dự án.');
+      return;
+    }
+
+    // Kiểm tra định dạng email
+    if (!emailRegex.test(email)) {
+      setError('Email không hợp lệ.');
+      return;
+    }
+
+    // Kiểm tra định dạng số điện thoại
+    if (!phoneRegex.test(phone)) {
+      setError('Số điện thoại không hợp lệ.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/projects`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName,
+          phone,
+          email,
+          selectedProject,  // Thêm dự án vào body
+        }),
+      });
+
+      // Kiểm tra phản hồi từ API
+      const data = await response.json();
+      console.log('Response:', response);
+
+      if (response.ok) {
+        // Nếu phản hồi thành công (status 200-299)
+        console.log('Đăng ký thành công:', data);
+      } else {
+        // Nếu có lỗi từ API
+        console.error('Lỗi đăng ký:', data);
+        setError(data.message || 'Đã xảy ra lỗi khi đăng ký');
+      }
+    } catch (error) {
+      // Xử lý lỗi mạng hoặc fetch
+      console.error('Lỗi kết nối:', error);
+      setError('Lỗi kết nối. Vui lòng thử lại sau.');
+    }
+
+    // Reset lỗi nếu mọi thứ hợp lệ
+    setError(null);
+    closeModalProjects();
   };
  
   const scrollToBenefit = () => {
@@ -274,6 +337,13 @@ const Home: React.FC = () => {
 
   const [animate, setAnimate] = useState(false);
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+
   useEffect(() => {
     setAnimate(true);
     window.scrollTo(0, 0);
@@ -292,8 +362,10 @@ const Home: React.FC = () => {
 
       <div className={styles.introduction} id="aboutUs" ref={membersRef}>
         <div className={styles.logoContainer}>
-          <img className={styles.logo} src="./imagesHome/LogoDTL.png" alt="" />
-          <img className={styles.logoSpy} src="./imagesHome/FullLogoBlack.png" alt="" />
+          <a href="https://dongtayland.vn/" target="_blank">
+            <img className={styles.logo} src="./imagesHome/LogoDTL.png" alt="" />
+          </a>
+          <img className={styles.logoSpy} src="./imagesHome/FullLogoBlack.png" alt="" onClick={scrollToTop} />
         </div>
         <img className={styles.imageIntroduction} src="./imagesHome/belowTitle.png" alt="Image below Title" />
         <div className={`${styles.descriptionIntroduction} ${animate ? styles.revealText : ''}`}
@@ -450,14 +522,17 @@ const Home: React.FC = () => {
           })}
           </div>
           <div className={styles.groupButton}>
-            <div className={styles.navButton} onClick={prevSlide}>&lt;</div>
-            <div className={styles.navButton} onClick={nextSlide}>&gt;</div>
+            <div className={styles.navButton} onClick={prevSlide}>
+              <img src="./imagesHome/left.png" alt="Previous Slide"/>
+            </div>
+            <div className={styles.navButton} onClick={nextSlide}>
+              <img src="./imagesHome/right.png" alt="Next Slide"/>
+            </div>
           </div>
         </div>
       </div>
 
       <div className={styles.invite}>
-        <img src="./imagesHome/inviteBanner.jpg" alt="Block 1" />
         <div className={styles.memberCard}>
           <div className={styles.becomeMember}>
             <div className={styles.titleBecomeMember}>Đăng ký nhận <br/>thông tin hằng tháng</div>
@@ -477,9 +552,13 @@ const Home: React.FC = () => {
               bao gồm giá cả, vị trí, tiện ích và nhiều thông tin khác. <br/>
               Hãy liên hệ với chúng tôi để được tư vấn và hỗ trợ tốt nhất.
             </div>
-            <div className={styles.buttonBecomeMember}>Liên hệ</div>
+            <div className={styles.buttonBecomeMember} onClick={openModalProjects}>Liên hệ</div>
             <div className={styles.or}>or</div>
-            <div className={styles.phone}>Liên hệ: 0772134455</div>
+            <div className={styles.phoneGroup}>Liên hệ: 
+              <a href="tel:0772134455" className={styles.noneHref}>
+                <div className={styles.phone}>0772134455</div>
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -574,6 +653,76 @@ const Home: React.FC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
+              </div>
+              {error && <div className={styles.error}>{error}</div>} {/* Hiển thị lỗi */}
+              <button type="submit" className={styles.submitButton}>Đăng ký</button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Pop-up Projects */}
+      {isModalProjectsOpen && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <span className={styles.close} onClick={closeModalProjects}>&times;</span>
+            <h2>Nhận thêm thông tin về dự án</h2>
+            <div className={styles.descriptionModal}>
+              Đăng ký nhận thông tin về các dự án để luôn cập nhật những cơ hội
+              <br /> đầu tư hấp dẫn và tin tức mới nhất. Bạn sẽ nhận được
+              <br /> thông báo về tiến độ, cơ hội đặc biệt, cũng
+              <br /> như các thay đổi quan trọng từ các dự
+              <br /> án uy tín. 
+              
+              <br /><br />Đừng bỏ lỡ cơ hội để nắm bắt thông tin kịp thời
+              <br /> và đưa ra quyết định đầu tư chính xác!
+            </div>
+            <form onSubmit={(e) => { e.preventDefault(); handleProjects(); }}>
+              <div className={styles.formGroup}>
+                <input
+                  type="text"
+                  id="fullName"
+                  value={fullName}
+                  placeholder="Họ tên"
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <input
+                  type="text"
+                  id="phone"
+                  value={phone}
+                  placeholder="Số điện thoại"
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  placeholder="Email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              {/* Dropdown for projects */}
+              <div className={styles.formGroup}>
+                <select
+                  id="project"
+                  value={selectedProject}
+                  onChange={(e) => setSelectedProject(e.target.value)}
+                  required
+                >
+                  <option value="">Chọn dự án</option>
+                  {estates.map((estate) => (
+                    <option key={estate.id} value={estate.name}>
+                      {estate.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               {error && <div className={styles.error}>{error}</div>} {/* Hiển thị lỗi */}
               <button type="submit" className={styles.submitButton}>Đăng ký</button>
