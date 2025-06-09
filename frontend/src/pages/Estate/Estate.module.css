@@ -558,6 +558,10 @@ button.submitButton:hover {
 }
 
 @media (max-width: 768px) {
+  .introduction{
+    justify-content: space-around;
+  }
+
   .imageStartDay{
     font-size: 10px;
   }
@@ -585,8 +589,8 @@ button.submitButton:hover {
   }
 
   .priceIntroduction{
-    font-size: 12px;
-    width: 120px;
+    font-size: 10px;
+    width: 100px;
     background-color: black;
     color: white;
     height: 40px;

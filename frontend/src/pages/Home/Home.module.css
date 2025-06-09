@@ -458,6 +458,11 @@
   object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: filter 0.3s ease;
+}
+
+.slide img:hover {
+  filter: brightness(1.1);
 }
 
 /* ảnh ở giữa */
@@ -711,6 +716,7 @@
 /* Style cho Form */
 .formGroup {
   margin-bottom: 15px;
+  width: 100%;
 }
 
 label {
@@ -718,7 +724,7 @@ label {
   margin-bottom: 5px;
 }
 
-input {
+.inputtext {
   width: 90%;
   padding: 10px 15px;
   font-size: 16px;

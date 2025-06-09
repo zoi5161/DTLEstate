@@ -11,6 +11,8 @@ const Manage: React.FC = () => {
   const [news, setNews] = useState<any[]>([]);
   const [staff, setStaff] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
   const API_URL = process.env.REACT_APP_API_URL;
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -35,23 +37,51 @@ const Manage: React.FC = () => {
     estate.name.toLowerCase().includes(searchValue.toLowerCase())
   );
 
-  const filteredNews = news.filter((item) => 
-    item.fullName.toLowerCase().includes(searchValue.toLowerCase()) ||
-    item.phone.toLowerCase().includes(searchValue.toLowerCase()) ||
-    item.email.toLowerCase().includes(searchValue.toLowerCase())
-  );
+  const filteredNews = news.filter((item) => {
+    const matchSearch =
+      item.fullName.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.phone.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.email.toLowerCase().includes(searchValue.toLowerCase());
 
-  const filteredStaff = staff.filter((item) => 
-    item.fullName.toLowerCase().includes(searchValue.toLowerCase()) ||
-    item.phone.toLowerCase().includes(searchValue.toLowerCase()) ||
-    item.email.toLowerCase().includes(searchValue.toLowerCase())
-  );
+    // Lọc theo ngày
+    const createdAt = new Date(item.createdAt).toISOString().split('T')[0]; // YYYY-MM-DD
+    const isWithinDateRange =
+      (!startDate || createdAt >= startDate) &&
+      (!endDate || createdAt <= endDate);
 
-  const filteredProjects = projects.filter((project) => 
-    project.fullName.toLowerCase().includes(searchValue.toLowerCase()) ||
-    project.phone.toLowerCase().includes(searchValue.toLowerCase()) ||
-    project.email.toLowerCase().includes(searchValue.toLowerCase())
-  );
+    return matchSearch && isWithinDateRange;
+  });
+
+
+  const filteredStaff = staff.filter((item) => {
+    const matchSearch =
+      item.fullName.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.phone.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.email.toLowerCase().includes(searchValue.toLowerCase());
+
+    const createdAt = new Date(item.createdAt).toISOString().split('T')[0];
+    const isWithinDateRange =
+      (!startDate || createdAt >= startDate) &&
+      (!endDate || createdAt <= endDate);
+
+    return matchSearch && isWithinDateRange;
+  });
+
+
+  const filteredProjects = projects.filter((project) => {
+    const matchSearch =
+      project.fullName.toLowerCase().includes(searchValue.toLowerCase()) ||
+      project.phone.toLowerCase().includes(searchValue.toLowerCase()) ||
+      project.email.toLowerCase().includes(searchValue.toLowerCase());
+
+    const createdAt = new Date(project.createdAt).toISOString().split('T')[0];
+    const isWithinDateRange =
+      (!startDate || createdAt >= startDate) &&
+      (!endDate || createdAt <= endDate);
+
+    return matchSearch && isWithinDateRange;
+  });
+
 
   // Handle input change cho các input thường
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -338,6 +368,35 @@ const Manage: React.FC = () => {
           </button>
         </div>
 
+        <div className={styles.dateFilter}>
+          <label>
+            Từ:
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </label>
+          <label>
+            Đến:
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </label>
+          <button
+            type="button"
+            onClick={() => {
+              setStartDate('');
+              setEndDate('');
+            }}
+            className={styles.resetDateButton}
+          >
+            Tất cả
+          </button>
+        </div>
+
         <div className={`${styles.addButton} ${activeTag === 'estates' ? '' : styles.disabledButton}`} onClick={activeTag === 'estates' ? handleAddNewClick : undefined}>
           Thêm mới
         </div>
@@ -363,6 +422,9 @@ const Manage: React.FC = () => {
               <div className={styles.newsFullName}>{item.fullName}</div>
               <div className={styles.newsPhone}>{item.phone}</div>
               <div className={styles.newsEmail}>{item.email}</div>
+              <div className={styles.newsCreatedAt}>
+                {new Date(item.createdAt).toLocaleString()}
+              </div>
             </div>
           ))
         ) : activeTag === 'members' && filteredStaff.length > 0 ? (
@@ -371,6 +433,9 @@ const Manage: React.FC = () => {
               <div className={styles.staffFullName}>{item.fullName}</div>
               <div className={styles.staffPhone}>{item.phone}</div>
               <div className={styles.staffEmail}>{item.email}</div>
+              <div className={styles.staffCreatedAt}>
+                {new Date(item.createdAt).toLocaleString()}
+              </div>
             </div>
           ))
         ) : activeTag === 'hots' && filteredProjects.length > 0 ? (
@@ -380,6 +445,9 @@ const Manage: React.FC = () => {
               <div className={styles.projectPhone}>{project.phone}</div>
               <div className={styles.projectEmail}>{project.email}</div>
               <div className={styles.projectSelected}>{project.selectedProject}</div>
+              <div className={styles.projectCreatedAt}>
+                {new Date(project.createdAt).toLocaleString()}
+              </div>
             </div>
           ))
         ) : (

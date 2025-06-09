@@ -437,7 +437,7 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      <div className={styles.members} ref={benefitRef} >
+      {/* <div className={styles.members} ref={benefitRef} >
         <div className={styles.titleMember}>
           Những Tên Tuổi Được Tin Cậy Nhất <br/>
           Trong Ngành Bất Động Sản Cao Cấp
@@ -468,7 +468,7 @@ const Home: React.FC = () => {
           Với hơn 10 năm hoạt động, Đông Tây Land đã thực hiện hàng trăm dự án lớn, góp phần vào việc phát triển những khu đô thị hiện đại và các dự án bất động sản nổi bật. Chính nhờ vào đội ngũ chuyên viên tài năng và tận tâm, Đông Tây Land đã ghi dấu ấn với hàng nghìn khách hàng hài lòng và tiếp tục khẳng định là một trong những tên tuổi hàng đầu trong ngành bất động sản tại Việt Nam.
         </div>
         <div className={styles.buttonSignUp} onClick={openModalRegister}>Đăng ký thành viên</div>
-      </div>
+      </div> */}
 
       <div className={styles.mapContainer}>
         <div className={styles.map}>
@@ -532,7 +532,7 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      <div className={styles.invite}>
+      <div className={styles.invite} ref={benefitRef}>
         <div className={styles.memberCard}>
           <div className={styles.becomeMember}>
             <div className={styles.titleBecomeMember}>Đăng ký nhận <br/>thông tin hằng tháng</div>
@@ -578,6 +578,7 @@ const Home: React.FC = () => {
             <form onSubmit={(e) => { e.preventDefault(); handleSignUp(); }}>
               <div className={styles.formGroup}>
                 <input
+                  className={styles.inputtext}
                   type="text"
                   id="fullName"
                   value={fullName}
@@ -588,6 +589,7 @@ const Home: React.FC = () => {
               </div>
               <div className={styles.formGroup}>
                 <input
+                  className={styles.inputtext}
                   type="text"
                   id="phone"
                   value={phone}
@@ -598,6 +600,7 @@ const Home: React.FC = () => {
               </div>
               <div className={styles.formGroup}>
                 <input
+                  className={styles.inputtext}
                   type="email"
                   id="email"
                   value={email}
@@ -626,6 +629,7 @@ const Home: React.FC = () => {
             <form onSubmit={(e) => { e.preventDefault(); handleNews(); }}>
               <div className={styles.formGroup}>
                 <input
+                  className={styles.inputtext}
                   type="text"
                   id="fullName"
                   value={fullName}
@@ -636,6 +640,7 @@ const Home: React.FC = () => {
               </div>
               <div className={styles.formGroup}>
                 <input
+                  className={styles.inputtext}
                   type="text"
                   id="phone"
                   value={phone}
@@ -646,6 +651,7 @@ const Home: React.FC = () => {
               </div>
               <div className={styles.formGroup}>
                 <input
+                  className={styles.inputtext}
                   type="email"
                   id="email"
                   value={email}
@@ -680,6 +686,7 @@ const Home: React.FC = () => {
             <form onSubmit={(e) => { e.preventDefault(); handleProjects(); }}>
               <div className={styles.formGroup}>
                 <input
+                  className={styles.inputtext}
                   type="text"
                   id="fullName"
                   value={fullName}
@@ -690,6 +697,7 @@ const Home: React.FC = () => {
               </div>
               <div className={styles.formGroup}>
                 <input
+                  className={styles.inputtext}
                   type="text"
                   id="phone"
                   value={phone}
@@ -700,6 +708,7 @@ const Home: React.FC = () => {
               </div>
               <div className={styles.formGroup}>
                 <input
+                  className={styles.inputtext}
                   type="email"
                   id="email"
                   value={email}
